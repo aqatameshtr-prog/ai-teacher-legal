@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سياسة الخصوصية — المدرس الافتراضي</title>
+<style>
+  :root{
+    --bg:#f4f9fb; --surface:#fff; --ink:#12303d; --soft:#3f5c68; --muted:#6b8695;
+    --accent:#1f7a8c; --warn:#c9902f; --border:#d6e6ea;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b1b22; --surface:#122630; --ink:#e7f1f5; --soft:#bcd3da;
+           --muted:#7fa0ac; --accent:#4fb6c9; --warn:#e8bb63; --border:#1e3945; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+       line-height:1.9;padding:24px 16px 64px}
+  .wrap{max-width:760px;margin:0 auto}
+  header{text-align:center;margin-bottom:28px}
+  h1{font-size:1.6rem;margin:.2em 0}
+  .sub{color:var(--muted);font-size:.85rem}
+  .lang{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .lang button{border:1px solid var(--border);background:var(--surface);color:var(--soft);
+       border-radius:99px;padding:7px 18px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+  .lang button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+  section.card{background:var(--surface);border:1px solid var(--border);
+       border-radius:14px;padding:18px 20px;margin-bottom:16px}
+  h2{font-size:1.05rem;color:var(--accent);margin:0 0 .5em}
+  h3{font-size:.95rem;margin:1.1em 0 .3em}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin:.6em 0}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:start;vertical-align:top}
+  th{background:var(--bg);font-weight:700}
+  .flag{background:color-mix(in srgb,var(--warn) 18%,transparent);
+       border-radius:10px;padding:12px 14px;font-size:.9rem;margin:.8em 0}
+  ul{padding-inline-start:1.2em;margin:.4em 0}
+  li{margin:.3em 0}
+  a{color:var(--accent)}
+  code{background:var(--bg);padding:1px 6px;border-radius:5px;font-size:.85em}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:26px}
+  [dir="ltr"]{text-align:left}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>سياسة الخصوصية</h1>
+    <div class="sub">المدرس الافتراضي — Sanal Öğretmen<br>
+      آخر تحديث: <span id="d1">22 سبتمبر 2026</span></div>
+  </header>
+
+  <div class="lang">
+    <button id="btnAr" aria-pressed="true">العربية</button>
+    <button id="btnEn" aria-pressed="false">English</button>
+  </div>
+
+  <!-- ==================== ARABIC ==================== -->
+  <div id="ar">
+
+    <section class="card">
+      <h2>باختصار</h2>
+      <ul>
+        <li>التطبيق للأطفال بسن المدرسة — <b>ولي الأمر هو اللي بينشئ حساب ابنه</b> وبيوافق نيابةً عنه.</li>
+        <li>ما منبيع بياناتكم ولا منشاركها للإعلانات. <b>ما في إعلانات إطلاقاً بالتطبيق.</b></li>
+        <li>بتمرين القراءة بينسجّل صوت الطالب ويتحوّل لنص. <b>اقرأ القسم ٣ — فيه تفصيل مهم.</b></li>
+        <li>البيانات مخزّنة بخوادم داخل الاتحاد الأوروبي (فرانكفورت، ألمانيا).</li>
+        <li>فيك تطلب حذف كل بياناتك بأي وقت (القسم ٧).</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>١. مين نحنا وشو بيعمل التطبيق</h2>
+      <p>«المدرس الافتراضي» تطبيق تعليمي بيساعد الطلاب الناطقين بالعربية على دراسة
+      منهاج اللغة التركية (الصف السابع): مفردات، شرح نصوص، تمارين الكتاب،
+      تمارين قراءة بصوت عالٍ، ومساعد ذكاء اصطناعي بيشرح بالتركي المبسّط.</p>
+      <p><b>مشغّل التطبيق:</b> <span id="owner">Ahmed Katamesh</span><br>
+      <b>للتواصل:</b> <span id="mail">zakiai.smart@gmail.com</span></p>
+    </section>
+
+    <section class="card">
+      <h2>٢. شو البيانات اللي منجمعها</h2>
+      <table>
+        <tr><th>البيان</th><th>ليش</th><th>مدة الحفظ</th></tr>
+        <tr><td>بريد ولي الأمر + كلمة سر مشفّرة</td><td>إنشاء الحساب وتسجيل الدخول</td><td>لحد حذف الحساب</td></tr>
+        <tr><td>اسم الطالب والصف (اللي بيكتبه ولي الأمر)</td><td>تمييز ملفات الأبناء</td><td>لحد حذف الحساب</td></tr>
+        <tr><td>نتائج التمارين، سرعة القراءة، دقة النطق، الدروس المنجزة</td><td>تقارير ولي الأمر ومتابعة التقدّم</td><td>لحد حذف الحساب</td></tr>
+        <tr><td>إجابات الطالب المكتوبة (لما يطلب تصحيحها بالذكاء)</td><td>توليد ملاحظات تصحيحية</td><td>ما بتنخزّن بعد التصحيح</td></tr>
+        <tr><td>سجلّ عدد طلبات الذكاء الاصطناعي</td><td>حدّ الاستخدام اليومي ومنع الإساءة</td><td>٣٠ يوم</td></tr>
+      </table>
+      <p><b>ما منجمع:</b> موقع جغرافي · جهات اتصال · صور · معرّفات إعلانية ·
+      سجلّ التصفّح · أي شي من خارج التطبيق.</p>
+      <p><b>بريد الطالب:</b> التطبيق بيولّد بريداً داخلياً شكلياً (مثل
+      <code>ahmet.x7k2p@ogrenci.local</code>) وهو <b>مش صندوق بريد حقيقي</b> —
+      بيستخدم للدخول بس وما بينرسله أي رسالة.</p>
+    </section>
+
+    <section class="card">
+      <h2>٣. تسجيل الصوت — اقرأ هذا القسم بعناية</h2>
+      <p>بتمرين «القراءة الصوتية» بيضغط الطالب زر التسجيل ويقرأ جملة تركية بصوت عالٍ.
+      التطبيق بيحوّل الصوت لنص وبيقارنه بالجملة الأصلية كلمة كلمة.</p>
+
+      <div class="flag">
+        <b>⚠️ مهم جداً:</b> التطبيق بيستخدم <b>محرّك التعرّف على الصوت الموجود بجهازك</b>
+        (محرّك أندرويد، أو المتصفح بنسخة الويب). على أغلب أجهزة أندرويد هذا المحرّك تابع
+        لـ<b>غوغل</b>، ومعناها إنّ <b>تسجيل الصوت بينرسل لخوادم غوغل ليتحوّل لنص</b>،
+        وبيخضع لسياسة خصوصية غوغل مش لسياستنا.<br><br>
+        بعض الأجهزة فيها تعرّف صوتي يشتغل محلياً بدون إنترنت. للتحقق:
+        <b>إعدادات أندرويد ← النظام ← اللغات والإدخال ← التعرّف على الصوت</b>.
+      </div>
+
+      <ul>
+        <li><b>نحنا ما منخزّن التسجيل الصوتي إطلاقاً</b> — لا على الجهاز ولا على خوادمنا.</li>
+        <li>النص الناتج بينستخدم بالذاكرة للمقارنة وبينحذف فوراً.</li>
+        <li>اللي بينحفظ بس: <b>رقمان</b> — نسبة الدقة وسرعة القراءة.</li>
+        <li>إذن الميكروفون اختياري. في وضع بديل («القراءة الموقّتة») بيشتغل بدون ميكروفون نهائياً.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>٤. الذكاء الاصطناعي</h2>
+      <p>التطبيق بيستخدم نموذج ذكاء اصطناعي لشرح الكلمات بالتركي وتصحيح الإجابات المكتوبة.
+      <b>ولي الأمر هو اللي بيختار المزوّد</b> من إعدادات التطبيق:</p>
+      <table>
+        <tr><th>الخيار</th><th>وين بتروح البيانات</th></tr>
+        <tr><td>نموذج محلي (على جهازك أو عبر نفق)</td><td><b>ما بتطلع من أجهزتك</b> — ولا طرف ثالث</td></tr>
+        <tr><td>Claude (Anthropic)</td><td>نص السؤال أو الإجابة بينرسل لـ Anthropic</td></tr>
+        <tr><td>خدمة OpenAI-compatible</td><td>حسب المزوّد اللي بتختاره</td></tr>
+      </table>
+      <p>اللي بينرسل للمزوّد: <b>نص السؤال أو إجابة الطالب فقط</b> — بدون اسم،
+      بدون بريد، وبدون أي معرّف شخصي. ومزوّدو الذكاء المذكورين بيصرّحوا إنهم
+      ما بيدرّبوا نماذجهم على بيانات الواجهة البرمجية.</p>
+    </section>
+
+    <section class="card">
+      <h2>٥. خصوصية الأطفال</h2>
+      <p>هذا التطبيق موجّه لطلاب بسن ١٠–١٥ سنة تقريباً، فبنتعامل مع بياناتهم بحماية إضافية:</p>
+      <ul>
+        <li><b>الطفل ما بيقدر ينشئ حساب لحاله.</b> ولي الأمر بينشئ حسابه من داخل حسابه هو،
+        وهاي موافقة ولي الأمر المطلوبة بموجب COPPA والمادة ٨ من GDPR.</li>
+        <li>ما منطلب من الطفل أي بيانات شخصية — ولا حتى بريد حقيقي.</li>
+        <li><b>ما في إعلانات، ولا تتبّع إعلاني، ولا مشتريات داخل التطبيق.</b></li>
+        <li>ما في دردشة ولا تواصل بين المستخدمين.</li>
+        <li>ولي الأمر بيشوف كل بيانات ابنه ويقدر يحذفها بأي وقت.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>٦. وين بتنخزّن البيانات ومين بيوصلها</h2>
+      <p>البيانات مخزّنة عند <b>Supabase</b> (بنية تحتية على AWS) بمنطقة
+      <b>فرانكفورت، ألمانيا (الاتحاد الأوروبي)</b>.</p>
+      <p>الوصول محكوم بقواعد أمان على مستوى الصفوف (Row Level Security) بالخادم:</p>
+      <ul>
+        <li>كل عائلة بتشوف بياناتها هي بس — ما في وصول لبيانات عائلة تانية.</li>
+        <li>الطالب بيشوف تقدّمه هو فقط.</li>
+        <li>الإجابات النموذجية للتمارين ما بترسلها الخوادم للطالب إطلاقاً.</li>
+      </ul>
+      <p><b>ما منشارك البيانات مع أي جهة تانية</b> إلا مزوّد الذكاء اللي بيختاره ولي الأمر
+      (القسم ٤)، أو إذا فرض علينا القانون.</p>
+    </section>
+
+    <section class="card">
+      <h2>٧. حقوقك</h2>
+      <ul>
+        <li><b>الاطّلاع</b> — اطلب نسخة من كل بياناتك.</li>
+        <li><b>التصحيح</b> — عدّل اسم الطالب أو صفّه من داخل التطبيق.</li>
+        <li><b>الحذف</b> — احذف حساب طالب أو الحساب كله. الحذف <b>نهائي وبيشمل كل التقارير</b>.</li>
+        <li><b>سحب الموافقة</b> — امنع إذن الميكروفون، أو اختر نموذج ذكاء محلي، أو أوقف استخدام التطبيق.</li>
+      </ul>
+      <p>لأي طلب، راسلنا على البريد بالقسم ١. منردّ خلال <b>٣٠ يوم</b> كحد أقصى.</p>
+    </section>
+
+    <section class="card" id="delete">
+      <h2>٨. حذف الحساب والبيانات</h2>
+      <p><b>من داخل التطبيق</b> — أسرع طريقة، والحذف بينفّذ فوراً:</p>
+      <ol>
+        <li>سجّل دخول بحساب ولي الأمر.</li>
+        <li>لوحة ولي الأمر ← <b>⚙️ الحساب والخصوصية</b>.</li>
+        <li>اكتب كلمة <code>DELETE</code> واضغط <b>حذف حسابي نهائياً</b>.</li>
+      </ol>
+      <p>لحذف طالب واحد بس: لوحة ولي الأمر ← <b>👥 الطلاب</b> ← <b>🗑 حذف</b> جنب اسمه.</p>
+
+      <p><b>بدون التطبيق</b> — راسلنا من نفس بريد الحساب على العنوان بالقسم ١
+      وموضوع الرسالة «حذف حساب». منأكّد الطلب ومننفّذه خلال <b>٣٠ يوم</b>.</p>
+
+      <p><b>شو بينمسح:</b> حساب الدخول والبريد، حسابات الطلاب المرتبطة، كل التقدّم
+      والعلامات والتقارير، المهام والإجابات، إعدادات الذكاء الاصطناعي وسجلّ الاستخدام.
+      الحذف <b>نهائي وما فيه تراجع</b>، وما مننحتفظ بنسخة.</p>
+
+      <p><b>شو ما بينمسح:</b> ولا إشي. التسجيلات الصوتية أصلاً ما بتنخزّن عنا
+      (شوف القسم ٣). سجلّات السيرفر التقنية بتنمسح تلقائياً خلال ٣٠ يوم.</p>
+    </section>
+
+    <section class="card">
+      <h2>٩. الأمان</h2>
+      <ul>
+        <li>كل الاتصالات مشفّرة (HTTPS/TLS).</li>
+        <li>كلمات السر مخزّنة بصيغة هاش، وما منشوفها أبداً.</li>
+        <li>مفاتيح خدمات الذكاء الاصطناعي محفوظة على الخادم وما بتوصل الجهاز إطلاقاً.</li>
+      </ul>
+      <p>مع هيك، ما في نظام آمن ١٠٠٪. لو صار خرق يمسّ بياناتك، رح نبلّغك والجهات
+      المختصة خلال <b>٧٢ ساعة</b> حسب ما بيفرض GDPR.</p>
+    </section>
+
+    <section class="card">
+      <h2>١٠. تعديلات السياسة</h2>
+      <p>لو غيّرنا شي جوهري — خصوصاً بتسجيل الصوت أو مزوّدي الذكاء — رح نحدّث
+      تاريخ «آخر تحديث» ونعرض إشعاراً داخل التطبيق قبل ما يسري التغيير.</p>
+    </section>
+
+  </div>
+
+  <!-- ==================== ENGLISH ==================== -->
+  <div id="en" dir="ltr" hidden>
+
+    <section class="card">
+      <h2>In short</h2>
+      <ul>
+        <li>This app is for school-age children — <b>a parent creates the child's account</b> and consents on their behalf.</li>
+        <li>We do not sell your data or share it for advertising. <b>There are no ads.</b></li>
+        <li>The reading exercise records the student's voice and converts it to text. <b>Please read section 3 — there is an important detail.</b></li>
+        <li>Data is stored in the EU (Frankfurt, Germany).</li>
+        <li>You can request deletion of all your data at any time (section 7).</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>1. Who we are and what the app does</h2>
+      <p>"Sanal Öğretmen / المدرس الافتراضي" is an educational app that helps Arabic-speaking
+      students study the Turkish language curriculum (7th grade): vocabulary, text explanations,
+      textbook exercises, read-aloud practice, and an AI helper that explains in simplified Turkish.</p>
+      <p><b>Operator:</b> <span class="ownerEn">Ahmed Katamesh</span><br>
+      <b>Contact:</b> <span class="mailEn">zakiai.smart@gmail.com</span></p>
+    </section>
+
+    <section class="card">
+      <h2>2. What data we collect</h2>
+      <table>
+        <tr><th>Data</th><th>Why</th><th>Retention</th></tr>
+        <tr><td>Parent e-mail + hashed password</td><td>Account creation and sign-in</td><td>Until account deletion</td></tr>
+        <tr><td>Student name and grade (entered by the parent)</td><td>To distinguish children's profiles</td><td>Until account deletion</td></tr>
+        <tr><td>Exercise results, reading speed, pronunciation accuracy, lessons started</td><td>Parent reports and progress tracking</td><td>Until account deletion</td></tr>
+        <tr><td>Student's written answers (only when AI feedback is requested)</td><td>To generate corrective feedback</td><td>Not stored after feedback</td></tr>
+        <tr><td>Count of AI requests</td><td>Daily usage limit and abuse prevention</td><td>30 days</td></tr>
+      </table>
+      <p><b>We do not collect:</b> location · contacts · photos · advertising identifiers ·
+      browsing history · anything from outside the app.</p>
+      <p><b>Student e-mail:</b> the app generates an internal synthetic address (e.g.
+      <code>ahmet.x7k2p@ogrenci.local</code>). It is <b>not a real mailbox</b> — it is used
+      only as a login identifier and never receives mail.</p>
+    </section>
+
+    <section class="card">
+      <h2>3. Voice recording — please read carefully</h2>
+      <p>In the "read aloud" exercise the student presses record and reads a Turkish sentence.
+      The app converts the audio to text and compares it word by word with the original sentence.</p>
+
+      <div class="flag">
+        <b>⚠️ Important:</b> the app uses <b>the speech recognition engine already on your device</b>
+        (the Android recognizer, or the browser's on the web version). On most Android devices that
+        engine is provided by <b>Google</b>, which means <b>the audio is sent to Google's servers</b>
+        for transcription and is governed by Google's privacy policy, not ours.<br><br>
+        Some devices offer on-device recognition that works offline. To check:
+        <b>Android Settings → System → Languages &amp; input → Speech recognition</b>.
+      </div>
+
+      <ul>
+        <li><b>We never store the audio</b> — not on the device, not on our servers.</li>
+        <li>The resulting text is used in memory for the comparison and discarded immediately.</li>
+        <li>Only <b>two numbers</b> are saved: accuracy percentage and reading speed.</li>
+        <li>The microphone permission is optional. A "timed reading" mode works entirely without it.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>4. Artificial intelligence</h2>
+      <p>The app uses an AI model to explain words in Turkish and give feedback on written answers.
+      <b>The parent chooses the provider</b> in the app settings:</p>
+      <table>
+        <tr><th>Option</th><th>Where the data goes</th></tr>
+        <tr><td>Local model (your machine, or via a tunnel)</td><td><b>Never leaves your own devices</b> — no third party</td></tr>
+        <tr><td>Claude (Anthropic)</td><td>The question or answer text is sent to Anthropic</td></tr>
+        <tr><td>OpenAI-compatible service</td><td>Depends on the provider you choose</td></tr>
+      </table>
+      <p>What is sent: <b>only the question text or the student's answer</b> — no name,
+      no e-mail, no personal identifier. The named AI providers state that they do not
+      train their models on API data.</p>
+    </section>
+
+    <section class="card">
+      <h2>5. Children's privacy</h2>
+      <p>This app is intended for students roughly 10–15 years old, so their data gets extra protection:</p>
+      <ul>
+        <li><b>A child cannot create an account.</b> The parent creates it from within their own
+        account — this constitutes the verifiable parental consent required by COPPA and GDPR Article 8.</li>
+        <li>We ask the child for no personal information — not even a real e-mail address.</li>
+        <li><b>No ads, no ad tracking, no in-app purchases.</b></li>
+        <li>No chat or communication between users.</li>
+        <li>The parent can see and delete all of their child's data at any time.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>6. Where data is stored and who can reach it</h2>
+      <p>Data is stored with <b>Supabase</b> (AWS infrastructure) in the
+      <b>Frankfurt, Germany (EU)</b> region.</p>
+      <p>Access is enforced by Row Level Security rules on the server:</p>
+      <ul>
+        <li>Each family sees only its own data — no access to another family's records.</li>
+        <li>A student sees only their own progress.</li>
+        <li>Model answers to exercises are never sent to a student's device by the server.</li>
+      </ul>
+      <p><b>We do not share data with any third party</b> other than the AI provider the parent
+      selects (section 4), or where required by law.</p>
+    </section>
+
+    <section class="card">
+      <h2>7. Your rights</h2>
+      <ul>
+        <li><b>Access</b> — request a copy of all your data.</li>
+        <li><b>Correction</b> — edit a student's name or grade inside the app.</li>
+        <li><b>Deletion</b> — delete a student profile or the whole account. Deletion is
+        <b>permanent and includes all reports</b>.</li>
+        <li><b>Withdraw consent</b> — revoke the microphone permission, choose a local AI model,
+        or stop using the app.</li>
+      </ul>
+      <p>For any request, write to the address in section 1. We respond within <b>30 days</b>.</p>
+    </section>
+
+    <section class="card" id="delete-en">
+      <h2>8. Account and data deletion</h2>
+      <p><b>In the app</b> — fastest, and it takes effect immediately:</p>
+      <ol>
+        <li>Sign in with the parent account.</li>
+        <li>Parent dashboard → <b>⚙️ Account &amp; privacy</b>.</li>
+        <li>Type <code>DELETE</code> and press <b>Delete my account permanently</b>.</li>
+      </ol>
+      <p>To remove one student only: Parent dashboard → <b>👥 Students</b> → <b>🗑 Delete</b>
+      next to their name.</p>
+
+      <p><b>Without the app</b> — e-mail us from the account's own address, to the address in
+      section 1, with the subject "Account deletion". We verify the request and carry it out
+      within <b>30 days</b>.</p>
+
+      <p><b>What is erased:</b> the login and e-mail address, all linked student accounts, every
+      progress record, score and report, assignments and answers, AI settings and usage log.
+      Deletion is <b>permanent and cannot be undone</b>; we keep no copy.</p>
+
+      <p><b>What is kept:</b> nothing. Voice recordings are never stored by us in the first place
+      (see section 3). Technical server logs expire automatically within 30 days.</p>
+    </section>
+
+    <section class="card">
+      <h2>9. Security</h2>
+      <ul>
+        <li>All traffic is encrypted (HTTPS/TLS).</li>
+        <li>Passwords are stored hashed; we never see them.</li>
+        <li>AI service keys are held on the server and never reach the device.</li>
+      </ul>
+      <p>No system is perfectly secure. If a breach affects your data, we will notify you and
+      the relevant authorities within <b>72 hours</b>, as GDPR requires.</p>
+    </section>
+
+    <section class="card">
+      <h2>10. Changes to this policy</h2>
+      <p>If we change anything material — particularly around voice recording or AI providers —
+      we will update the "last updated" date and show an in-app notice before the change takes effect.</p>
+    </section>
+
+  </div>
+
+  <footer>المدرس الافتراضي · Sanal Öğretmen</footer>
+</div>
+
+<script>
+  const ar = document.getElementById('ar'), en = document.getElementById('en');
+  const bAr = document.getElementById('btnAr'), bEn = document.getElementById('btnEn');
+  function show(lang){
+    const isAr = lang === 'ar';
+    ar.hidden = !isAr; en.hidden = isAr;
+    bAr.setAttribute('aria-pressed', String(isAr));
+    bEn.setAttribute('aria-pressed', String(!isAr));
+    document.documentElement.lang = lang;
+    document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  }
+  bAr.onclick = () => show('ar');
+  bEn.onclick = () => show('en');
+</script>
+</body>
+</html>
