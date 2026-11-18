@@ -1411,6 +1411,143 @@ class MapControls extends OrbitControls {
 }
 
 THREE.OrbitControls = OrbitControls;
+
+/**
+ * https://github.com/google/model-viewer/blob/master/packages/model-viewer/src/three-components/EnvironmentScene.ts
+ */
+
+const {BackSide,BoxGeometry,Mesh,MeshBasicMaterial,MeshStandardMaterial,PointLight,Scene}=THREE;
+
+class RoomEnvironment extends Scene {
+
+	constructor() {
+
+		super();
+
+		const geometry = new BoxGeometry();
+		geometry.deleteAttribute( 'uv' );
+
+		const roomMaterial = new MeshStandardMaterial( { side: BackSide } );
+		const boxMaterial = new MeshStandardMaterial();
+
+		const mainLight = new PointLight( 0xffffff, 5.0, 28, 2 );
+		mainLight.position.set( 0.418, 16.199, 0.300 );
+		this.add( mainLight );
+
+		const room = new Mesh( geometry, roomMaterial );
+		room.position.set( - 0.757, 13.219, 0.717 );
+		room.scale.set( 31.713, 28.305, 28.591 );
+		this.add( room );
+
+		const box1 = new Mesh( geometry, boxMaterial );
+		box1.position.set( - 10.906, 2.009, 1.846 );
+		box1.rotation.set( 0, - 0.195, 0 );
+		box1.scale.set( 2.328, 7.905, 4.651 );
+		this.add( box1 );
+
+		const box2 = new Mesh( geometry, boxMaterial );
+		box2.position.set( - 5.607, - 0.754, - 0.758 );
+		box2.rotation.set( 0, 0.994, 0 );
+		box2.scale.set( 1.970, 1.534, 3.955 );
+		this.add( box2 );
+
+		const box3 = new Mesh( geometry, boxMaterial );
+		box3.position.set( 6.167, 0.857, 7.803 );
+		box3.rotation.set( 0, 0.561, 0 );
+		box3.scale.set( 3.927, 6.285, 3.687 );
+		this.add( box3 );
+
+		const box4 = new Mesh( geometry, boxMaterial );
+		box4.position.set( - 2.017, 0.018, 6.124 );
+		box4.rotation.set( 0, 0.333, 0 );
+		box4.scale.set( 2.002, 4.566, 2.064 );
+		this.add( box4 );
+
+		const box5 = new Mesh( geometry, boxMaterial );
+		box5.position.set( 2.291, - 0.756, - 2.621 );
+		box5.rotation.set( 0, - 0.286, 0 );
+		box5.scale.set( 1.546, 1.552, 1.496 );
+		this.add( box5 );
+
+		const box6 = new Mesh( geometry, boxMaterial );
+		box6.position.set( - 2.193, - 0.369, - 5.547 );
+		box6.rotation.set( 0, 0.516, 0 );
+		box6.scale.set( 3.875, 3.487, 2.986 );
+		this.add( box6 );
+
+
+		// -x right
+		const light1 = new Mesh( geometry, createAreaLightMaterial( 50 ) );
+		light1.position.set( - 16.116, 14.37, 8.208 );
+		light1.scale.set( 0.1, 2.428, 2.739 );
+		this.add( light1 );
+
+		// -x left
+		const light2 = new Mesh( geometry, createAreaLightMaterial( 50 ) );
+		light2.position.set( - 16.109, 18.021, - 8.207 );
+		light2.scale.set( 0.1, 2.425, 2.751 );
+		this.add( light2 );
+
+		// +x
+		const light3 = new Mesh( geometry, createAreaLightMaterial( 17 ) );
+		light3.position.set( 14.904, 12.198, - 1.832 );
+		light3.scale.set( 0.15, 4.265, 6.331 );
+		this.add( light3 );
+
+		// +z
+		const light4 = new Mesh( geometry, createAreaLightMaterial( 43 ) );
+		light4.position.set( - 0.462, 8.89, 14.520 );
+		light4.scale.set( 4.38, 5.441, 0.088 );
+		this.add( light4 );
+
+		// -z
+		const light5 = new Mesh( geometry, createAreaLightMaterial( 20 ) );
+		light5.position.set( 3.235, 11.486, - 12.541 );
+		light5.scale.set( 2.5, 2.0, 0.1 );
+		this.add( light5 );
+
+		// +y
+		const light6 = new Mesh( geometry, createAreaLightMaterial( 100 ) );
+		light6.position.set( 0.0, 20.0, 0.0 );
+		light6.scale.set( 1.0, 0.1, 1.0 );
+		this.add( light6 );
+
+	}
+
+	dispose() {
+
+		const resources = new Set();
+
+		this.traverse( ( object ) => {
+
+			if ( object.isMesh ) {
+
+				resources.add( object.geometry );
+				resources.add( object.material );
+
+			}
+
+		} );
+
+		for ( const resource of resources ) {
+
+			resource.dispose();
+
+		}
+
+	}
+
+}
+
+function createAreaLightMaterial( intensity ) {
+
+	const material = new MeshBasicMaterial();
+	material.color.setScalar( intensity );
+	return material;
+
+}
+
+THREE.RoomEnvironment = RoomEnvironment;
 </script>
 <script>
 /* ===== content: strings, lessons, organs, questions ===== */
@@ -1598,7 +1735,7 @@ const REVIEW=[
 const $=s=>document.querySelector(s);
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
 const cv=(pts,closed)=>new THREE.CatmullRomCurve3(pts.map(p=>V(p[0],p[1],p[2])),!!closed,'catmullrom',.5);
-const std=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.55,metalness:.03},o||{}));
+const std=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.55,metalness:.03,envMapIntensity:.1},o||{}));
 const lerp=(a,b,t)=>a+(b-a)*t, clamp=(x,a,b)=>Math.min(b,Math.max(a,x)), sm=t=>t*t*(3-2*t);
 const bump=(x,a,b)=>(x>a&&x<b)?Math.sin(Math.PI*(x-a)/(b-a)):0;
 const rgb=h=>{const c=new THREE.Color(h);return [c.r,c.g,c.b];};
@@ -1624,12 +1761,14 @@ renderer.outputEncoding=THREE.sRGBEncoding;
 stage.appendChild(renderer.domElement);
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(36,1,.1,200);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
+const pmrem=new THREE.PMREMGenerator(renderer);scene.environment=pmrem.fromScene(new THREE.RoomEnvironment(),.04).texture;
 const controls=new THREE.OrbitControls(camera,renderer.domElement);
 controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=6;controls.maxDistance=44;controls.maxPolarAngle=1.42;controls.screenSpacePanning=true;
 const U={k:{value:.4},scale:{value:600}}; /* shared point-sprite uniforms */
 
-const hemi=new THREE.HemisphereLight(0xffffff,0x8a8f98,.85);scene.add(hemi);
-const sun=new THREE.DirectionalLight(0xfff1dc,1.1);sun.position.set(-9,18,10);sun.castShadow=true;
+const hemi=new THREE.HemisphereLight(0xffffff,0x8a8f98,.28);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff1dc,.95);sun.position.set(-9,18,10);sun.castShadow=true;
 sun.shadow.mapSize.set(2048,2048);const sc=sun.shadow.camera;sc.left=-16;sc.right=16;sc.top=14;sc.bottom=-14;sc.near=1;sc.far=60;sun.shadow.bias=-.0004;sun.shadow.radius=3;
 scene.add(sun);
 const fill=new THREE.DirectionalLight(0xbcd4ff,.25);fill.position.set(10,6,-6);scene.add(fill);
@@ -1648,7 +1787,7 @@ const pageTex=[],pageMat=[],pageCv=[];
   g.computeVertexNormals();
   const c=document.createElement('canvas');c.width=1536;c.height=2036;pageCv.push(c);
   const tx=new THREE.CanvasTexture(c);tx.anisotropy=8;tx.encoding=THREE.sRGBEncoding;pageTex.push(tx);
-  const m=new THREE.MeshStandardMaterial({map:tx,roughness:.92,metalness:0});pageMat.push(m);
+  const m=new THREE.MeshStandardMaterial({map:tx,roughness:.92,metalness:0,envMapIntensity:.06});pageMat.push(m);
   const mesh=new THREE.Mesh(g,m);mesh.position.set(side*(PW/2+.03),0,0);mesh.receiveShadow=true;book.add(mesh);
 });
 /* model root: all body-system models live here, standing on the right page */
@@ -1691,11 +1830,13 @@ class Pool{
 /* ---------- views registry ---------- */
 const views={};
 function defView(id,def){
- def.id=id;def.pick=[];def.by={};def.group=new THREE.Group();def.group.visible=false;modelRoot.add(def.group);
+ def.id=id;def.pick=[];def.by={};def.group=new THREE.Group();def.group.visible=false;modelRoot.add(def.group);views[id]=def;return def;
+}
+function ensureBuilt(def){
+ if(def.built)return;def.built=true;
  const T=(oid,mesh,shell)=>{mesh.userData.organ=oid;if(shell)mesh.userData.shell=true;(def.by[oid]=def.by[oid]||[]).push(mesh);def.pick.push(mesh);return mesh;};
  def.build(def.group,T,def);
- def.group.traverse(o=>{if(o.isMesh&&o.material&&!o.material.isShaderMaterial&&!(o.material.transparent&&o.material.opacity<.5))o.castShadow=true;});
- views[id]=def;return def;
+ def.group.traverse(o=>{if(o.isMesh&&o.material&&!o.material.isShaderMaterial&&!(o.material.transparent&&o.material.opacity<.7)){o.castShadow=true;}});
 }
 
 /* ---------- audio ---------- */
@@ -1761,7 +1902,7 @@ function applyHL(time){
  if(!cur)return;
  for(const id in cur.by){
   let k=0;if(ST.hover===id)k+=.32;if(ST.sel===id)k+=.3+.1*Math.sin(time*5);if(cur.auto===id)k+=.28;if(cur.flash&&cur.flash.id===id)k+=cur.flash.k;
-  cur.by[id].forEach(m=>{const mt=m.material;if(mt&&mt.emissive&&mt.color){mt.emissive.copy(mt.color).multiplyScalar(k);}});
+  cur.by[id].forEach(m=>{const mt=m.material;if(mt&&mt.emissive&&mt.color){mt.emissive.copy((mt.userData&&mt.userData.glow)||mt.color).multiplyScalar(k);}});
  }
 }
 const labelEls={};const tmpV=new THREE.Vector3();
@@ -1787,7 +1928,7 @@ function updateLabels(){
 function curKey(){const L=LESSONS[ST.step];if(!L.view)return null;return L.view+(ST.close&&views[L.view+'_d']?'_d':'');}
 function setView(){
  const key=curKey();if(cur)cur.group.visible=false;
- cur=key?views[key]:null;
+ cur=key?views[key]:null;if(cur)ensureBuilt(cur);
  ghost.visible=!!(cur&&cur.body)&&ST.outline;pedestal.visible=!!cur;
  if(cur){cur.group.visible=true;modelRoot.scale.setScalar(cur.scale);modelRoot.position.set(cur.pos[0],cur.pos[1],cur.pos[2]);U.k.value=cur.scale;pedestal.position.set(cur.pedestal?cur.pedestal[0]:4.3,.04,cur.pedestal?cur.pedestal[1]:0);pedestal.scale.setScalar(cur.pedScale||1);if(cur.reset)cur.reset();}
  ST.sel=null;ST.hover=null;buildLabels();renderPanel();
@@ -1856,7 +1997,7 @@ function renderQuestions(p){
     if(oi===q.a){s.done=true;b.classList.add('good');sfx.ok();if(s.tries===1)addStar(1);
       const ex=w.querySelector('.ex');ex.textContent='✔ '+L3(UI.right)+' '+L3(q.e);ex.hidden=false;
       if(cur&&cur.demo&&q.go!=null)cur.demo(q.go);cur.flash={id:q.hl,k:.5};setTimeout(()=>{if(cur)cur.flash=null;},2600);
-      ST.sel=q.hl;showOrgan(q.hl);
+      ST.sel=q.hl;showOrgan(q.hl);if(cur&&cur.onSelect)cur.onSelect(q.hl);
     }else{b.classList.add('bad');sfx.no();toast(L3(UI.wrong));setTimeout(()=>b.classList.remove('bad'),700);}
    };row.appendChild(b);});
   w.appendChild(row);const ex=el('p','ex');ex.hidden=true;w.appendChild(ex);
@@ -1900,7 +2041,7 @@ function applyLang(){
 function applyTheme(){
  const dk=ST.theme==='dark';document.documentElement.dataset.theme=ST.theme;
  scene.background=new THREE.Color(dk?0x0f1722:0xcfdad2);
- desk.material.color.setHex(dk?0x1f3a33:0x8fae9f);hemi.intensity=dk?.5:.85;sun.intensity=dk?.75:1.1;sun.color.setHex(dk?0xbcd0ff:0xfff1dc);
+ desk.material.color.setHex(dk?0x1f3a33:0x8fae9f);hemi.intensity=dk?.15:.28;sun.intensity=dk?.7:.95;sun.color.setHex(dk?0xbcd0ff:0xfff1dc);
  ghostU.c.value.setHex(dk?0x9fc2e8:0x2f4a66);
  try{localStorage.setItem('b3d_theme',ST.theme);}catch(e){}
  drawPages();
@@ -1946,31 +2087,142 @@ function start(){
  requestAnimationFrame(frame);
 }
 
-/* ===== views: digestive, circulatory, respiratory, excretory (+ close-ups) ===== */
+/* ===== geo: organic sculpting toolkit (noise, deform, vein paint, loft, wet-tissue materials) ===== */
+const PERM=new Uint8Array(512);
+(function(){const p=[];for(let i=0;i<256;i++)p[i]=i;let s=7;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647;};for(let i=255;i>0;i--){const j=Math.floor(rnd()*(i+1));const t=p[i];p[i]=p[j];p[j]=t;}for(let i=0;i<512;i++)PERM[i]=p[i&255];})();
+const fd_=t=>t*t*t*(t*(t*6-15)+10);
+const gr_=(h,x,y,z)=>{h&=15;const u=h<8?x:y,v=h<4?y:(h===12||h===14?x:z);return((h&1)?-u:u)+((h&2)?-v:v);};
+const lp_=(a,b,t)=>a+(b-a)*t;
+function pn(x,y,z){
+ const fx=Math.floor(x),fy=Math.floor(y),fz=Math.floor(z),X=fx&255,Y=fy&255,Z=fz&255;x-=fx;y-=fy;z-=fz;
+ const u=fd_(x),v=fd_(y),w=fd_(z),A=PERM[X]+Y,AA=PERM[A]+Z,AB=PERM[A+1]+Z,B=PERM[X+1]+Y,BA=PERM[B]+Z,BB=PERM[B+1]+Z;
+ return lp_(lp_(lp_(gr_(PERM[AA],x,y,z),gr_(PERM[BA],x-1,y,z),u),lp_(gr_(PERM[AB],x,y-1,z),gr_(PERM[BB],x-1,y-1,z),u),v),
+              lp_(lp_(gr_(PERM[AA+1],x,y,z-1),gr_(PERM[BA+1],x-1,y,z-1),u),lp_(gr_(PERM[AB+1],x,y-1,z-1),gr_(PERM[BB+1],x-1,y-1,z-1),u),v),w);
+}
+function fbm(x,y,z,o){let a=1,f=1,s=0,n=0;for(let i=0;i<(o||4);i++){s+=pn(x*f,y*f,z*f)*a;n+=a;a*=.5;f*=2.03;}return s/n;}
+const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
+
+/* merge duplicate vertices (kills the UV seam) and drop uv/normal */
+function weld(g){
+ const p=g.attributes.position,map=new Map(),np=[],rem=new Array(p.count);
+ for(let i=0;i<p.count;i++){const k=Math.round(p.getX(i)*1e4)+','+Math.round(p.getY(i)*1e4)+','+Math.round(p.getZ(i)*1e4);let j=map.get(k);if(j===undefined){j=np.length/3;map.set(k,j);np.push(p.getX(i),p.getY(i),p.getZ(i));}rem[i]=j;}
+ const src=g.index?g.index.array:null,n=src?src.length:p.count,idx=[];
+ for(let i=0;i<n;i+=3){const a=rem[src?src[i]:i],b=rem[src?src[i+1]:i+1],c=rem[src?src[i+2]:i+2];if(a!==b&&b!==c&&a!==c)idx.push(a,b,c);}
+ const out=new THREE.BufferGeometry();out.setAttribute('position',new THREE.Float32BufferAttribute(np,3));out.setIndex(idx);out.computeVertexNormals();return out;
+}
+function shapeG(g,fn){const p=g.attributes.position,o=[0,0,0];for(let i=0;i<p.count;i++){fn(p.getX(i),p.getY(i),p.getZ(i),o);p.setXYZ(i,o[0],o[1],o[2]);}p.needsUpdate=true;g.computeVertexNormals();return g;}
+function sculpt(g,fn){g.computeVertexNormals();const p=g.attributes.position,n=g.attributes.normal;for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),d=fn(x,y,z);p.setXYZ(i,x+n.getX(i)*d,y+n.getY(i)*d,z+n.getZ(i)*d);}p.needsUpdate=true;g.computeVertexNormals();return g;}
+const HSL_={h:0,s:0,l:0};
+/* vertex colours: mottled base + optional vein network (ridged noise) */
+function paint(g,hex,o){
+ o=o||{};const base=new THREE.Color(hex),vc=new THREE.Color(o.vein||0x7a1c24),p=g.attributes.position,n=p.count,col=new Float32Array(n*3),t=new THREE.Color();
+ const s=o.s||2.5,v=o.v==null?.16:o.v,vs=o.vs||3,va=o.va||0;
+ for(let i=0;i<n;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+  t.copy(base).multiplyScalar(1+v*fbm(x*s,y*s,z*s+10,3));
+  if(va>0){const r=1-Math.abs(pn(x*vs,y*vs,z*vs+30));t.lerp(vc,ss(.9,.985,r)*va);}
+  t.getHSL(HSL_);t.setHSL(HSL_.h,Math.min(1,HSL_.s*1.4),HSL_.l*.9);
+  col[i*3]=t.r;col[i*3+1]=t.g;col[i*3+2]=t.b;}
+ g.setAttribute('color',new THREE.BufferAttribute(col,3));return g;
+}
+function paintFn(g,fn){const p=g.attributes.position,n=p.count,col=new Float32Array(n*3);for(let i=0;i<n;i++){const c=fn(p.getX(i),p.getY(i),p.getZ(i));col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;}g.setAttribute('color',new THREE.BufferAttribute(col,3));return g;}
+
+/* organic blob: unit sphere -> shape -> noise -> paint -> scale */
+function blobG(rx,ry,rz,o){
+ o=o||{};const g=weld(new THREE.SphereGeometry(1,o.w||72,o.h||54));
+ if(o.shape)shapeG(g,o.shape);
+ if(o.sc){g.computeVertexNormals();sculpt(g,o.sc);}
+ if(o.bump){const bf=o.bf||3;sculpt(g,(x,y,z)=>o.bump*fbm(x*bf,y*bf,z*bf,o.oct||3));}
+ paint(g,o.color||0xd08080,o.paint);g.scale(rx,ry,rz);g.computeVertexNormals();return g;
+}
+/* loft: a tube whose radius / cross-section can vary along a curve */
+function loft(curve,o){
+ const N=o.segs||Math.max(24,Math.round(curve.getLength()*(o.dens||26))),R=o.radial||16,fr=curve.computeFrenetFrames(N,false),P=[],I=[],C=[];
+ const base=o.color!=null?new THREE.Color(o.color):null,tc=new THREE.Color(),ex=o.ex||1;
+ for(let i=0;i<=N;i++){
+  const u=i/N,c=curve.getPointAt(u),nm=fr.normals[i],bn=fr.binormals[i],r0=o.r?o.r(u):(o.radius||.1);
+  for(let j=0;j<R;j++){const a=j/R*Math.PI*2,ca=Math.cos(a),sa=Math.sin(a),w=o.wob?o.wob(u,a,ca,sa):1,rr=r0*w;
+   P.push(c.x+(nm.x*ca*ex+bn.x*sa)*rr,c.y+(nm.y*ca*ex+bn.y*sa)*rr,c.z+(nm.z*ca*ex+bn.z*sa)*rr);}
+ }
+ for(let i=0;i<N;i++)for(let j=0;j<R;j++){const a=i*R+j,b=i*R+(j+1)%R,c=(i+1)*R+j,d=(i+1)*R+(j+1)%R;I.push(a,b,c,b,d,c);}
+ if(o.caps!==false){
+  [0,N].forEach(e=>{const c=curve.getPointAt(e/N),ci=P.length/3;P.push(c.x,c.y,c.z);for(let j=0;j<R;j++){const a=e*R+j,b=e*R+(j+1)%R;if(e===0)I.push(ci,b,a);else I.push(ci,a,b);}});
+ }
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setIndex(I);g.computeVertexNormals();
+ /* make sure faces point outwards */
+ {const nr=g.attributes.normal,ps=g.attributes.position,i=Math.floor(N/2),j=Math.floor(R/4),vi=i*R+j,cc=curve.getPointAt(i/N);
+  const dx=ps.getX(vi)-cc.x,dy=ps.getY(vi)-cc.y,dz=ps.getZ(vi)-cc.z;
+  if(nr.getX(vi)*dx+nr.getY(vi)*dy+nr.getZ(vi)*dz<0){for(let k=0;k<I.length;k+=3){const t=I[k+1];I[k+1]=I[k+2];I[k+2]=t;}g.setIndex(I);g.computeVertexNormals();}}
+ if(o.cfn){const n=g.attributes.position.count,col=new Float32Array(n*3);for(let i=0;i<=N;i++)for(let j=0;j<R;j++){const c=o.cfn(i/N);col[(i*R+j)*3]=c.r;col[(i*R+j)*3+1]=c.g;col[(i*R+j)*3+2]=c.b;}
+  for(let k=(N+1)*R;k<n;k++){const c=o.cfn(k===(N+1)*R?0:1);col[k*3]=c.r;col[k*3+1]=c.g;col[k*3+2]=c.b;}g.setAttribute('color',new THREE.BufferAttribute(col,3));}
+ else if(base)paint(g,o.color,Object.assign({s:o.ps||1.6,vs:o.vs||2.4},o.paint||{}));
+ return g;
+}
+function centerGeo(m){m.geometry.computeBoundingBox();const c=m.geometry.boundingBox.getCenter(new THREE.Vector3());m.geometry.translate(-c.x,-c.y,-c.z);m.position.add(c);return m;}
+
+/* wet-tissue materials */
+function bio(hex,o){
+ const m=new THREE.MeshPhysicalMaterial(Object.assign({color:0xffffff,vertexColors:true,roughness:.42,metalness:0,clearcoat:.55,clearcoatRoughness:.3,sheen:.5,sheenRoughness:.6,sheenColor:new THREE.Color(0xffb4b4),envMapIntensity:.8},o||{}));
+ m.userData.glow=new THREE.Color(hex);return m;
+}
+function bioP(hex,o){return bio(hex,Object.assign({color:hex,vertexColors:false},o||{}));}
+function wet(hex,op){return bio(hex,{transparent:true,opacity:op||.62,depthWrite:false,side:THREE.DoubleSide,clearcoat:.7});}
+
+/* ===== views: digestive, circulatory, respiratory, excretory (+ close-ups) — sculpted organs ===== */
 const M=(c,o)=>std(c,o);
 const GLASS=(c,op)=>std(c,{transparent:true,opacity:op,roughness:.25,depthWrite:false});
+const _tp=new THREE.Vector3();
+const RED=rgb(0xe11d2e),BLU=rgb(0x2f5de0);
+const TAU=Math.PI*2;
+const mesh=(g,T,id,geo,mat,pos,sh)=>{const m=new THREE.Mesh(geo,mat);if(pos)m.position.set(pos[0],pos[1],pos[2]);g.add(m);if(id)T(id,m,sh);return m;};
+const put=(g,T,id,m)=>{g.add(m);T(id,m);return m;};
+const lm=(g,T,id,curve,o,mat,sh)=>mesh(g,T,id,loft(curve,o),mat,null,sh);
+
+/* lung shape: apex, concave base, mediastinal impression, cardiac notch (left), fissures */
+function lungG(side,rx,ry,rz){
+ const med=-side,g=weld(new THREE.SphereGeometry(1,110,84));
+ shapeG(g,(x,y,z,o)=>{const top=ss(.05,1,y),k=1-.4*top;let X=x*k,Z=z*k*(1-.12*top),Y=y;
+  if(y<0){const rr=Math.min(1,X*X+Z*Z);Y=y+.26*(1-rr)*ss(0,-.85,y);}
+  const m=X*med;if(m>0)X=med*(m*(1-.38*m));o[0]=X;o[1]=Y;o[2]=Z;});
+ sculpt(g,(x,y,z)=>{const m=x*med;let d=.012*fbm(x*7,y*7,z*7,3);
+  d-=.2*Math.exp(-(((m-.8)**2)/.14+((y+.05)**2)/.45+((z-.1)**2)/.5));
+  if(side>0)d-=.26*Math.exp(-(((m-.75)**2)/.16+((y+.4)**2)/.1+((z-.65)**2)/.1));
+  const d1=y*.62-z*.78+.1;if(m<.5)d-=.07*Math.exp(-(d1*d1)/.0012)*ss(.5,-.1,m);
+  if(side<0){const d2=y-.22;d-=.06*Math.exp(-(d2*d2)/.001)*ss(0,.4,z)*(m<.6?1:0);}
+  return d;});
+ paint(g,0xe9a3ad,{s:6,v:.14,vein:0x8e7081,va:.5,vs:5.5});
+ g.scale(rx,ry,rz);g.computeVertexNormals();return g;
+}
 
 /* ========== DIGESTIVE ========== */
 const SMALL_PTS=(function(){const p=[[.95,1.1,.4],[.85,.6,.45]];for(let k=0;k<6;k++){const y0=.1-.36*k,dir=k%2===0?-1:1,sx=k%2===0?.95:-.95;for(let i=0;i<5;i++){p.push([sx+dir*i*.475,y0+.07*Math.sin(i*1.7+k),.5+.1*Math.sin(i*2+k)]);}}p.push([.2,-2.0,.4],[-.7,-2.05,.35],[-1.3,-1.9,.3]);return p;})();
 const LARGE_PTS=[[-1.3,-1.9,.3],[-1.3,-1.0,.25],[-1.3,-.1,.25],[-1.25,.5,.25],[-.7,.7,.25],[0,.58,.25],[.7,.7,.25],[1.25,.5,.25],[1.3,-.1,.25],[1.3,-1.0,.25],[1.2,-1.9,.28],[.75,-2.4,.3],[.3,-2.3,.3],[0,-2.8,.3]];
 defView('dig',{
- scale:.52,pos:[4.2,1.95,.2],body:true,cam:{p:[4.0,17.5,12.5],t:[4.0,1.0,.3]},
+ scale:.68,pos:[4.2,2.55,.2],body:true,pedScale:1.5,cam:{p:[4.0,17.2,12.2],t:[4.0,2.0,.3]},
  title:S3('Sindirim sistemi','الجهاز الهضمي','Digestive system'),
  organs:[['mouth',[0,6.25,.8]],['salivary',[.75,6.1,.4]],['pharynx',[0,5.5,.3]],['esophagus',[0,4,.2]],['liver',[-1.5,2.0,.9]],['gallbladder',[-.4,1.3,.9]],['stomach',[1.3,1.6,.9]],['pancreas',[1.5,.85,.5]],['small',[0,-.8,.9]],['large',[-1.6,-1.2,.6]],['anus',[0,-3.5,.6]]],
  build(g,T,d){
-  const mk=(id,m,sh)=>{g.add(m);T(id,m,sh);return m;};
-  mk('mouth',ell(.42,.25,.34,M(0xe9798a),[0,6.22,.45]));
-  [-1,1].forEach(s=>mk('salivary',ell(.2,.17,.17,M(0xf6b26b),[s*.62,6.1,.3])));
-  mk('pharynx',tube(cv([[0,6.1,.3],[0,5.6,.12],[0,5.05,.06]]),.2,M(0xe08a9b)));
-  mk('esophagus',tube(cv([[0,5.05,.06],[0,4,.06],[0,3,.14],[.12,2.3,.3],[.3,2.0,.4]]),.14,M(0xe39a82)));
-  d.stomach=mk('stomach',ell(.78,.6,.55,M(0xd0705f),[.65,1.5,.42]));d.stomach.rotation.z=.6;
-  const liv=mk('liver',ell(1.05,.6,.62,M(0x9a4a3a),[-.85,1.85,.4]));liv.rotation.z=.15;
-  mk('gallbladder',ell(.14,.2,.14,M(0x58b368),[-.35,1.35,.72]));
-  mk('pancreas',tube(cv([[-.5,.95,.2],[.3,1.05,.2],[1.05,1.25,.15]]),.15,M(0xf2c27a)));
-  mk('small',tube(cv(SMALL_PTS),.13,M(0xeca2a0),420,8));
-  mk('large',tube(cv(LARGE_PTS),.24,M(0xc07f70),260,10));mk('large',ell(.27,.27,.27,M(0xc07f70),[-1.3,-2.12,.25]));
-  mk('anus',tube(cv([[0,-2.8,.3],[0,-3.4,.3]]),.2,M(0xa8645a)));
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(.2,.06,10,24),M(0x8a4a44));ring.position.set(0,-3.5,.3);ring.rotation.x=Math.PI/2;mk('anus',ring);
+  /* mouth, tongue, teeth */
+  mesh(g,T,'mouth',blobG(.42,.24,.34,{w:48,h:36,color:0xd9677a,bump:.05,bf:3,paint:{s:3,v:.12}}),bio(0xd9677a,{roughness:.3}),[0,6.2,.42]);
+  mesh(g,T,'mouth',blobG(.3,.12,.32,{w:44,h:32,color:0xe27f8f,bump:.07,bf:5,paint:{s:6,v:.2}}),bio(0xe27f8f,{roughness:.4}),[0,6.12,.5]);
+  const tg=blobG(.045,.065,.04,{w:14,h:10,color:0xf4f0e6}),tm=bioP(0xf4f0e6,{roughness:.22,clearcoat:.9});
+  for(let i=0;i<14;i++){const a=-1.25+i*(2.5/13);mesh(g,T,'mouth',tg,tm,[Math.sin(a)*.32,6.3,.42+Math.cos(a)*.3]);}
+  [-1,1].forEach(s=>mesh(g,T,'salivary',blobG(.2,.17,.17,{w:36,h:28,color:0xf2b074,bump:.09,bf:6,paint:{s:5,v:.18}}),bio(0xf2b074,{roughness:.5,clearcoat:.2}),[s*.62,6.1,.3]));
+  lm(g,T,'pharynx',cv([[0,6.1,.3],[0,5.6,.12],[0,5.05,.06]]),{radius:.2,color:0xe08a9b,wob:(u,a)=>1+.06*Math.cos(a*3+u*4)},wet(0xe08a9b,.82));
+  lm(g,T,'esophagus',cv([[0,5.05,.06],[0,4,.06],[0,3,.14],[.12,2.3,.3],[.2,2.1,.4]]),{radius:.14,color:0xe39a82,dens:30,wob:(u,a)=>1+.1*Math.cos(a*5+u*2)+.04*pn(u*14,Math.cos(a),Math.sin(a))},wet(0xe39a82,.7));
+  /* stomach: J-shaped loft, fundus dome -> body -> antrum -> pylorus */
+  const sr=u=>{const top=Math.sqrt(Math.max(0,1-Math.pow(1-Math.min(1,u/.16),2)));return (.06+.46*top)*(1-.72*ss(.45,1,u));};
+  d.stomach=centerGeo(lm(g,T,'stomach',cv([[.12,2.22,.42],[.3,1.85,.5],[.55,1.45,.52],[.85,1.2,.47],[1.15,1.02,.4]]),{r:sr,radial:28,dens:46,color:0xcf6e60,ps:1.2,paint:{v:.14,vein:0xa8443a,va:.4,vs:2},wob:(u,a)=>1+.05*pn(u*5,Math.cos(a)*1.4,Math.sin(a)*1.4)},wet(0xcf6e60,.7)));
+  /* liver (two lobes, glossy), gallbladder, pancreas */
+  const liv=mesh(g,T,'liver',blobG(1.1,.6,.62,{w:90,h:64,shape:(x,y,z,o)=>{const k=ss(-.2,1,x);o[0]=x;o[1]=y*(1-.55*k)*(y<0?.85:1);o[2]=z*(1-.35*k);},bump:.035,bf:3,color:0x8c3d2e,paint:{s:2,v:.1,vein:0x4a1812,va:.25,vs:2.6}}),bio(0x8c3d2e,{roughness:.28,clearcoat:.95,clearcoatRoughness:.15}),[-.85,1.85,.4]);liv.rotation.z=.15;
+  const gb=mesh(g,T,'gallbladder',blobG(.15,.24,.15,{w:36,h:28,shape:(x,y,z,o)=>{const f=1-.5*ss(-1,1,y);o[0]=x*f;o[1]=y;o[2]=z*f;},color:0x4f9d5a,bump:.02}),bio(0x4f9d5a,{roughness:.15,clearcoat:1}),[-.35,1.3,.74]);gb.rotation.z=-.3;
+  lm(g,T,'pancreas',cv([[-.5,.95,.2],[.3,1.05,.2],[1.05,1.25,.15]]),{r:u=>.2-.1*u,radial:20,dens:36,color:0xe8b88a,ps:3,paint:{v:.12},wob:(u,a)=>1+.22*pn(u*16,Math.cos(a)*2.2,Math.sin(a)*2.2)},bio(0xe8b88a,{roughness:.55,clearcoat:.15}));
+  /* intestines: gut translucent so the bolus stays visible */
+  lm(g,T,'small',cv(SMALL_PTS),{radius:.13,radial:14,dens:30,color:0xe6a09a,ps:3,paint:{v:.1,vein:0xb44f4f,va:.3,vs:3},wob:(u,a,ca,sa)=>1+.07*pn(u*40,ca,sa)},wet(0xe6a09a,.66));
+  lm(g,T,'large',cv(LARGE_PTS),{radius:.24,radial:20,dens:28,color:0xc98f7e,ps:2,paint:{v:.1},wob:(u,a)=>.86+.18*Math.abs(Math.sin(u*Math.PI*19))+.03*Math.cos(a*3)},wet(0xc98f7e,.7));
+  mesh(g,T,'large',blobG(.27,.27,.27,{w:32,h:24,color:0xc98f7e,bump:.05}),wet(0xc98f7e,.7),[-1.3,-2.12,.25]);
+  lm(g,T,'large',cv([[-1.2,-2.3,.25],[-1.05,-2.7,.3],[-.8,-2.85,.3]]),{radius:.05,color:0xbb8472},wet(0xbb8472,.85));
+  lm(g,T,'anus',cv([[0,-2.8,.3],[0,-3.4,.3]]),{radius:.2,color:0xa8645a},wet(0xa8645a,.8));
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.2,.06,14,28),bioP(0x8a4a44,{roughness:.35}));ring.position.set(0,-3.5,.3);ring.rotation.x=Math.PI/2;g.add(ring);T('anus',ring);
   d.seg=[
    {id:'mouth',c:cv([[0,6.5,.9],[0,6.25,.5],[0,6.12,.3]]),dur:2.6,r:[.2,.17],col:[0xb8793e,0xb8793e],ease:1},
    {id:'pharynx',c:cv([[0,6.12,.3],[0,5.6,.12],[0,5.05,.06]]),dur:1.2,r:[.17,.15],col:[0xb8793e,0xb8793e]},
@@ -1980,7 +2232,7 @@ defView('dig',{
    {id:'large',c:cv(LARGE_PTS),dur:5.2,r:[.09,.1],col:[0xb98f3d,0x7a5a2c]},
    {id:'anus',c:cv([[0,-2.8,.3],[0,-3.4,.3]]),dur:1.6,r:[.11,.11],col:[0x7a5a2c,0x5b3f1f]}];
   d.total=d.seg.reduce((s,x)=>s+x.dur,0);d.starts=[];let a=0;d.seg.forEach(s=>{d.starts.push(a);a+=s.dur;});
-  d.food=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),M(0xb8793e,{roughness:.7}));d.food.castShadow=true;g.add(d.food);
+  d.food=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),bioP(0xb8793e,{roughness:.55,clearcoat:.3}));d.food.castShadow=true;g.add(d.food);
   d.fx=new Pool(140,.16,g);d.acc=0;d.T=0;d.stage=-1;
  },
  reset(){this.T=0;this.auto=null;},
@@ -2004,7 +2256,7 @@ defView('dig',{
   }
   this.fx.update(dt);
   const id=i>=0?this.seg[i].id:null;this.auto=id;
-  this.stomach.scale.set(.78*(1+.04*Math.sin(this.T*6)*(id==='stomach'?1:0)),.6,.55);
+  this.stomach.scale.setScalar(1+.04*Math.sin(this.T*6)*(id==='stomach'?1:0));
   if(i!==this.stage){this.stage=i;this.setStatus(i);}
   if(this.scrub&&!this.dragging)this.scrub.sl.value=clamp(this.T/this.total,0,1);
  },
@@ -2026,12 +2278,13 @@ defView('dig_d',{
  title:S3('Villus (ince bağırsak yüzeyi)','الزغابات (سطح الأمعاء الدقيقة)','Villi (inside the small intestine)'),
  organs:[['villus',[0,-.1,.8]],['vcap',[-.9,-1.4,.5]],['lacteal',[.9,-1.4,.5]],['lumen',[-3.2,1.6,.5]]],
  build(g,T,d){
-  const slab=new THREE.Mesh(new THREE.BoxGeometry(9,.6,5),M(0xd98a8a,{roughness:.8}));slab.position.set(0,-2.6,0);g.add(slab);
+  const slab=mesh(g,T,null,blobG(4.6,.3,2.6,{w:48,h:24,shape:(x,y,z,o)=>{o[0]=Math.sign(x)*Math.pow(Math.abs(x),.35);o[1]=y;o[2]=Math.sign(z)*Math.pow(Math.abs(z),.35);},color:0xd98a8a,bump:.04,bf:2,paint:{s:2,v:.12}}),bio(0xd98a8a,{roughness:.5}),[0,-2.6,0]);
   d.v=[];const gd=[[-3,-1.1],[-1,-1.1],[1,-1.1],[3,-1.1],[-2,1.1],[0,1.1],[2,1.1]];
-  gd.forEach((p,i)=>{const [x,z]=p;
-   const vil=new THREE.Mesh(new THREE.CapsuleGeometry(.36,1.6,8,18),M(0xf4a3b0,{transparent:true,opacity:.62,depthWrite:false,roughness:.5}));vil.position.set(x,-1.45,z);g.add(vil);T('villus',vil);
-   const cap=tube(cv([[x-.12,-2.35,z],[x-.12,-.95,z],[x,-.55,z],[x+.04,-.95,z],[x+.04,-2.35,z]]),.045,M(0xd62828));g.add(cap);T('vcap',cap);
-   const lac=tube(cv([[x+.17,-2.35,z],[x+.17,-.8,z]]),.06,M(0xf2c84b));g.add(lac);T('lacteal',lac);
+  gd.forEach(p=>{const x=p[0],z=p[1];
+   const vr=u=>.38*Math.pow(Math.max(0,1-Math.pow(u,7)),.5)*(1+.05*Math.sin(u*14));
+   lm(g,T,'villus',cv([[x,-2.35,z],[x,-1.4,z],[x,-.42,z]]),{r:vr,radial:22,dens:30,color:0xf4a3b0,ps:2.5,paint:{v:.1,vein:0xd1566a,va:.15,vs:3},wob:(u,a)=>1+.04*Math.cos(a*4+u*9)},wet(0xf4a3b0,.55));
+   const cap=tube(cv([[x-.12,-2.35,z],[x-.12,-.95,z],[x,-.55,z],[x+.04,-.95,z],[x+.04,-2.35,z]]),.045,bioP(0xd62828,{roughness:.3}));g.add(cap);T('vcap',cap);
+   const lac=tube(cv([[x+.17,-2.35,z],[x+.17,-.8,z]]),.06,bioP(0xf2c84b,{roughness:.3}));g.add(lac);T('lacteal',lac);
    d.v.push({x,z});});
   const lum=new THREE.Mesh(new THREE.BoxGeometry(9,.05,5),GLASS(0xfff2c4,.12));lum.position.set(0,1.6,0);g.add(lum);T('lumen',lum,true);
   d.dots=new Dots(120,.22,g);d.ps=[];for(let i=0;i<120;i++)d.ps.push({v:i%7,ph:Math.random(),fat:i%3===0,sx:(Math.random()-.5)*8,sz:(Math.random()-.5)*4.2,sy:.1+Math.random()*1.6});
@@ -2054,18 +2307,21 @@ defView('dig_d',{
 const SEG={};
 function segdef(name,pts,ox0,ox1){const c=cv(pts);SEG[name]={c,len:c.getLength(),ox0,ox1};return SEG[name];}
 function mkLoop(names){let tot=0;const arr=names.map(n=>{const s=SEG[n];const o={s,start:tot};tot+=s.len;return o;});return {arr,tot};}
-const _tp=new THREE.Vector3();
 function sampleLoop(L,u,out){const s=u*L.tot;for(let i=L.arr.length-1;i>=0;i--){const a=L.arr[i];if(s>=a.start){const lu=clamp((s-a.start)/a.s.len,0,1);a.s.c.getPointAt(lu,out);return lerp(a.s.ox0,a.s.ox1,lu);}}return 1;}
-const RED=rgb(0xe11d2e),BLU=rgb(0x2f5de0);
 defView('cir',{
- scale:.52,pos:[4.2,1.95,.2],body:true,cam:{p:[4.0,17.5,12.5],t:[4.0,1.0,.3]},
+ scale:.68,pos:[4.2,2.55,.2],body:true,pedScale:1.5,cam:{p:[4.0,17.2,12.2],t:[4.0,2.0,.3]},
  title:S3('Dolaşım sistemi','الجهاز الدوري','Circulatory system'),
  organs:[['lv',[1.2,1.5,.9]],['rv',[.3,1.4,1]],['la',[1.15,2.8,.7]],['ra',[-.7,2.8,.9]],['aorta',[.9,3.7,.5]],['vena',[-.6,4.5,.6]],['pulmart',[0,3.1,1.0]],['pulmvein',[-1.1,2.1,.6]],['capillary',[0,-3.4,.6]],['lungs',[2.0,3.4,.6]]],
  build(g,T,d){
-  const mk=(id,m,sh)=>{g.add(m);T(id,m,sh);return m;};
-  d.ch={ra:mk('ra',ell(.36,.4,.34,M(0x4f7df3),[-.12,2.52,.45])),rv:mk('rv',ell(.46,.6,.4,M(0x3a5fd0),[.1,1.85,.55])),la:mk('la',ell(.34,.36,.32,M(0xf06a6a),[.78,2.55,.32])),lv:mk('lv',ell(.5,.72,.46,M(0xd02a2a),[.6,1.8,.35]))};
+  /* heart chambers: tapered, glossy muscle with coronary-fat veins */
+  const taper=(x,y,z,o)=>{const k=1-.5*ss(-.1,1,-y);o[0]=x*k;o[1]=y;o[2]=z*k;};
+  const ch=(id,rx,ry,rz,col,pos,rot,shape)=>{const m=mesh(g,T,id,blobG(rx,ry,rz,{w:84,h:62,shape,bump:.03,bf:3,color:col,paint:{s:2,v:.1,vein:0xf0d27a,va:.5,vs:2.2}}),bio(col,{roughness:.3,clearcoat:.85,clearcoatRoughness:.2}),pos);m.rotation.z=rot||0;return m;};
+  d.ch={ra:ch('ra',.4,.46,.36,0x6a7fd0,[-.12,2.52,.45],0),rv:ch('rv',.52,.72,.44,0x4b63c4,[.1,1.85,.55],-.12,taper),la:ch('la',.4,.36,.34,0xe0575b,[.78,2.55,.32],0),lv:ch('lv',.58,.86,.5,0xb8272c,[.6,1.8,.35],.42,taper)};
+  mesh(g,T,'ra',blobG(.2,.22,.14,{w:30,h:24,color:0x6a7fd0,bump:.05}),bio(0x6a7fd0,{clearcoat:.7}),[-.5,2.8,.72]);
+  mesh(g,T,'la',blobG(.18,.2,.14,{w:30,h:24,color:0xe0575b,bump:.05}),bio(0xe0575b,{clearcoat:.7}),[1.12,2.68,.6]);
   d.base={};for(const k in d.ch)d.base[k]=d.ch[k].scale.clone();
-  [-1,1].forEach(s=>mk('lungs',ell(.95,1.8,.8,GLASS(0xe58a9a,.2),[s*1.5,2.5,.1]),true));
+  const lungMat=()=>bio(0xe49aa6,{roughness:.5,transparent:true,opacity:.3,depthWrite:false});
+  [-1,1].forEach(s=>mesh(g,T,'lungs',lungG(s,.95,1.8,.8),lungMat(),[s*1.5,2.5,.1],true));
   const A=[.2,3.5,.2];
   segdef('asc',[[.62,2.2,.35],[.7,2.9,.35],[.5,3.45,.28],A],1,1);
   segdef('desc',[A,[-.05,3.2,.05],[0,2.2,0],[.1,1,-.05],[.15,-.8,-.05],[.2,-2.6,0]],1,1);
@@ -2083,10 +2339,12 @@ defView('cir',{
   segdef('capR',[[-1.3,3.4,.3],[-1.8,3,.35],[-1.85,2.2,.3],[-1.7,1.5,.3],[-1.3,1.4,.25]],0,1);
   segdef('vnR',[[-1.3,1.4,.25],[-.5,1.9,.3],[.2,2.4,.3],[.78,2.55,.32]],1,1);
   segdef('la2lv',[[.78,2.55,.32],[.7,2.2,.33],[.62,2.2,.35]],1,1);
-  const art=M(0xe14b4b),vei=M(0x4a6fe0),cap=M(0xb35c9a);
-  [['asc',.13,art,'aorta'],['desc',.13,art,'aorta'],['headUp',.08,art,'aorta'],['ivc',.1,vei,'vena'],['svc',.1,vei,'vena'],['rv2pt',.1,vei,'pulmart'],['trL',.07,vei,'pulmart'],['trR',.07,vei,'pulmart'],['vnL',.07,art,'pulmvein'],['vnR',.07,art,'pulmvein']]
-   .forEach(a=>mk(a[3],tube(SEG[a[0]].c,a[1],a[2])));
-  ['capLow','capHead','capL','capR'].forEach(n=>{for(let k=-1;k<=1;k++){const pts=SEG[n].c.getPoints(14).map(p=>[p.x+k*.07,p.y,p.z+k*.05]);mk('capillary',tube(cv(pts),.028,cap,40,6));}});
+  const art=0xd94a4a,vei=0x4a64d8,cap=0xc0508f;
+  [['asc',.16,.14,art,'aorta'],['desc',.13,.1,art,'aorta'],['headUp',.08,.07,art,'aorta'],['ivc',.11,.12,vei,'vena'],['svc',.1,.11,vei,'vena'],['rv2pt',.12,.11,vei,'pulmart'],['trL',.08,.07,vei,'pulmart'],['trR',.08,.07,vei,'pulmart'],['vnL',.07,.08,art,'pulmvein'],['vnR',.07,.08,art,'pulmvein']]
+   .forEach(a=>lm(g,T,a[4],SEG[a[0]].c,{r:u=>lerp(a[1],a[2],u),radial:16,dens:30,color:a[3],ps:3,paint:{v:.06},wob:(u,an)=>1+.03*Math.cos(an*3+u*8)},bio(a[3],{roughness:.32,clearcoat:.7})));
+  ['capLow','capHead','capL','capR'].forEach(n=>{for(let k=-1;k<=1;k++){const pts=SEG[n].c.getPoints(14).map(p=>[p.x+k*.07,p.y,p.z+k*.05]);put(g,T,'capillary',tube(cv(pts),.028,bioP(cap,{roughness:.3}),40,6));}});
+  /* coronary arteries on the heart surface */
+  [[[.5,2.3,.7],[.62,1.9,.84],[.78,1.5,.8],[.95,1.1,.62]],[[.45,2.35,.68],[.15,2.3,.8],[-.2,2.1,.8],[-.3,1.7,.7]]].forEach(p=>lm(g,T,'lv',cv(p),{radius:.03,color:0xc23030,caps:true},bio(0xc23030,{roughness:.3,clearcoat:.8})));
   d.loops=[mkLoop(['asc','desc','capLow','ivc','ra2rv','rv2pt','trL','capL','vnL','la2lv']),mkLoop(['asc','desc','capLow','ivc','ra2rv','rv2pt','trR','capR','vnR','la2lv']),
            mkLoop(['asc','headUp','capHead','svc','ra2rv','rv2pt','trL','capL','vnL','la2lv']),mkLoop(['asc','headUp','capHead','svc','ra2rv','rv2pt','trR','capR','vnR','la2lv'])];
   d.N=200;d.dots=new Dots(d.N,.16,g);d.pt=[];for(let i=0;i<d.N;i++)d.pt.push({l:i%4,u:Math.random(),o:V((Math.random()-.5)*.08,(Math.random()-.5)*.08,(Math.random()-.5)*.08)});
@@ -2096,7 +2354,7 @@ defView('cir',{
  update(dt,raw){
   this.ph=(this.ph+dt*this.bpm/60)%1;const ph=this.ph;
   const at=bump(ph,0,.14),ve=bump(ph,.14,.42);
-  for(const k in this.ch){const m=this.ch[k],b=this.base[k],c=(k==='ra'||k==='la')?at:ve;const s=1-.15*c;m.scale.set(b.x*s,b.y*s,b.z*s);m.material.emissive.setHex(0x000000);}
+  for(const k in this.ch){const m=this.ch[k],b=this.base[k],c=(k==='ra'||k==='la')?at:ve;const s=1-.15*c;m.scale.set(b.x*s,b.y*s,b.z*s);}
   const boost=.45+1.3*bump(ph,.14,.5);
   for(let i=0;i<this.N;i++){const p=this.pt[i],L=this.loops[p.l];p.u=(p.u+dt*3.0*(this.bpm/72)*boost/L.tot)%1;
    const ox=sampleLoop(L,p.u,_tp);this.dots.set(i,_tp.x+p.o.x,_tp.y+p.o.y,_tp.z+p.o.z,[lerp(BLU[0],RED[0],ox),lerp(BLU[1],RED[1],ox),lerp(BLU[2],RED[2],ox)],1);}
@@ -2122,26 +2380,26 @@ const BG={A:['A','AB'],B:['B','AB'],AB:['AB'],'0':['0','A','B','AB']};
 defView('cir_d',{
  scale:.62,pos:[4.2,2.3,.3],body:false,pedestal:[4.2,.3],pedScale:2.6,cam:{p:[4.2,15,12],t:[4.2,1.9,.3]},
  title:S3('Kan: damar içinde','الدم داخل الوعاء','Blood inside a vessel'),
- organs:[['rbc',()=>this_c.rbcPos],['wbc',()=>this_c.wbcPos],['platelet',()=>this_c.pltPos],['plasma',[5.5,1.6,.5]]],
+ organs:[['rbc',()=>cirD.rbcPos],['wbc',()=>cirD.wbcPos],['platelet',()=>cirD.pltPos],['plasma',[5.5,1.6,.5]]],
  build(g,T,d){
-  window.this_c=d;
-  const v=new THREE.Mesh(new THREE.CylinderGeometry(1.7,1.7,17,48,1,true),GLASS(0xffe08a,.16));v.rotation.z=Math.PI/2;v.material.side=THREE.DoubleSide;g.add(v);T('plasma',v,true);
+  window.cirD=d;
+  const v=new THREE.Mesh(new THREE.CylinderGeometry(1.7,1.7,17,56,1,true),bioP(0xffd27a,{transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide,roughness:.1,clearcoat:1}));v.rotation.z=Math.PI/2;g.add(v);T('plasma',v,true);
   const prof=[];[[0,.2],[.3,.34],[.55,.46],[.75,.5],[.9,.4],[1,.2],[1.02,0]].forEach(p=>prof.push(new THREE.Vector2(p[0],p[1])));[[1,-.2],[.9,-.4],[.75,-.5],[.55,-.46],[.3,-.34],[0,-.2]].forEach(p=>prof.push(new THREE.Vector2(p[0],p[1])));
-  d.nR=90;d.rbc=new THREE.InstancedMesh(new THREE.LatheGeometry(prof,22),M(0xb71c1c,{roughness:.45}),d.nR);d.rbc.scale.setScalar(.42);g.add(d.rbc);T('rbc',d.rbc);
+  d.nR=90;d.rbc=new THREE.InstancedMesh(new THREE.LatheGeometry(prof,32),bioP(0xc0262d,{roughness:.32,clearcoat:.8}),d.nR);d.rbc.scale.setScalar(.42);g.add(d.rbc);T('rbc',d.rbc);
   d.rd=[];for(let i=0;i<d.nR;i++){const a=Math.random()*6.28,r=Math.sqrt(Math.random())*1.15;d.rd.push({x:(Math.random()-.5)*16,y:Math.cos(a)*r,z:Math.sin(a)*r,r:r,rx:Math.random()*6,ry:Math.random()*6,s:.8+Math.random()*.3});}
-  d.nW=6;d.wbc=new THREE.InstancedMesh(new THREE.SphereGeometry(1,24,18),M(0xf1eefc,{roughness:.4,transparent:true,opacity:.92}),d.nW);d.wbc.scale.setScalar(.2);g.add(d.wbc);T('wbc',d.wbc);
-  d.wn=new THREE.InstancedMesh(new THREE.SphereGeometry(1,16,12),M(0x7c4dff),d.nW*2);g.add(d.wn);
+  d.nW=6;d.wbc=new THREE.InstancedMesh(blobG(1,1,1,{w:44,h:34,color:0xf1eefc,bump:.1,bf:4,paint:{s:5,v:.06}}),bio(0xf1eefc,{roughness:.4,transparent:true,opacity:.92}),d.nW);d.wbc.scale.setScalar(.2);g.add(d.wbc);T('wbc',d.wbc);
+  d.wn=new THREE.InstancedMesh(blobG(1,1,1,{w:24,h:18,color:0x7c4dff,bump:.12,bf:3}),bio(0x7c4dff,{roughness:.5}),d.nW*2);g.add(d.wn);
   d.wd=[];for(let i=0;i<d.nW;i++){const a=Math.random()*6.28;d.wd.push({x:(Math.random()-.5)*16,y:Math.cos(a)*.9,z:Math.sin(a)*.9});}
-  d.nP=40;d.plt=new THREE.InstancedMesh(new THREE.SphereGeometry(1,10,8),M(0xf6c453),d.nP);g.add(d.plt);T('platelet',d.plt);
+  d.nP=40;d.plt=new THREE.InstancedMesh(blobG(1,1,1,{w:16,h:12,color:0xf6c453,bump:.2,bf:2}),bio(0xf6c453,{roughness:.4}),d.nP);g.add(d.plt);T('platelet',d.plt);
   d.pd=[];for(let i=0;i<d.nP;i++){const a=Math.random()*6.28,r=Math.sqrt(Math.random())*1.4;d.pd.push({x:(Math.random()-.5)*16,y:Math.cos(a)*r,z:Math.sin(a)*r,r:r});}
-  d.o=new THREE.Object3D();d.rbcPos=[0,0,0];d.wbcPos=[0,0,0];d.pltPos=[0,0,0];d.bc=new THREE.Color();
+  d.o=new THREE.Object3D();d.rbcPos=[0,0,0];d.wbcPos=[0,0,0];d.pltPos=[0,0,0];
  },
  update(dt,raw,time){
   const o=this.o,f=(r)=>(1-(r/1.8)*(r/1.8))*1.5+.25;
   this.rd.forEach((p,i)=>{p.x+=dt*f(p.r);if(p.x>8)p.x-=16;p.rx+=dt*.8;p.ry+=dt*.5;o.position.set(p.x/.42,p.y/.42,p.z/.42);o.rotation.set(p.rx,p.ry,0);o.scale.setScalar(p.s);o.updateMatrix();this.rbc.setMatrixAt(i,o.matrix);
    if(i===0)this.rbcPos=[p.x,p.y+.8,p.z];});this.rbc.instanceMatrix.needsUpdate=true;
   this.wd.forEach((p,i)=>{p.x+=dt*.5;if(p.x>8)p.x-=16;o.rotation.set(0,0,0);o.position.set(p.x/.2,p.y/.2,p.z/.2);o.scale.setScalar(1);o.updateMatrix();this.wbc.setMatrixAt(i,o.matrix);
-   o.position.set(p.x+.05,p.y+.02,p.z+.04);o.position.multiplyScalar(1);o.scale.setScalar(.13);o.updateMatrix();this.wn.setMatrixAt(i*2,o.matrix);o.position.set(p.x-.08,p.y-.04,p.z-.02);o.updateMatrix();this.wn.setMatrixAt(i*2+1,o.matrix);if(i===0)this.wbcPos=[p.x,p.y+.7,p.z];});
+   o.position.set(p.x+.05,p.y+.02,p.z+.04);o.scale.setScalar(.13);o.updateMatrix();this.wn.setMatrixAt(i*2,o.matrix);o.position.set(p.x-.08,p.y-.04,p.z-.02);o.updateMatrix();this.wn.setMatrixAt(i*2+1,o.matrix);if(i===0)this.wbcPos=[p.x,p.y+.7,p.z];});
   this.wbc.instanceMatrix.needsUpdate=true;this.wn.instanceMatrix.needsUpdate=true;
   this.pd.forEach((p,i)=>{p.x+=dt*f(p.r)*.9;if(p.x>8)p.x-=16;o.rotation.set(time*.5+i,0,0);o.position.set(p.x,p.y,p.z);o.scale.set(.16,.07,.16);o.updateMatrix();this.plt.setMatrixAt(i,o.matrix);if(i===0)this.pltPos=[p.x,p.y+.5,p.z];});this.plt.instanceMatrix.needsUpdate=true;
  },
@@ -2166,41 +2424,53 @@ function growTree(grp,mat,start,dir,len,rad,depth,radii,leaves){
  [-1,1].forEach(s=>{const nd=dir.clone().applyAxisAngle(depth%2?V(0,0,1):V(1,0,0),s*.62).add(V(0,-.14,0)).normalize();growTree(grp,mat,end,nd,len*.78,rad*.74,depth-1,radii,leaves);});
 }
 defView('res',{
- scale:.52,pos:[4.2,1.95,.2],body:true,cam:{p:[4.0,17.5,12.5],t:[4.0,1.0,.3]},
+ scale:.68,pos:[4.2,2.55,.2],body:true,pedScale:1.5,cam:{p:[4.0,17.2,12.2],t:[4.0,2.0,.3]},
  title:S3('Solunum sistemi','الجهاز التنفّسي','Respiratory system'),
- organs:[['nose',[0,6.45,1]],['rpharynx',[.5,5.6,.3]],['larynx',[.5,4.95,.3]],['trachea',[.5,4.2,.3]],['bronchi',[-.8,3.3,.6]],['rlungs',[-1.9,1.5,.9]],['alveoli',()=>V(0,0,0).toArray()],['diaphragm',[1.9,.5,1]],['ribs',[2.3,3.2,.9]]],
+ organs:[['nose',[0,6.45,1]],['rpharynx',[.5,5.6,.3]],['larynx',[.5,4.95,.3]],['trachea',[.5,4.2,.3]],['bronchi',[-.8,3.3,.6]],['rlungs',[-1.9,1.5,.9]],['alveoli',[1,1.5,.3]],['diaphragm',[1.9,.5,1]],['ribs',[2.3,3.2,.9]]],
  build(g,T,d){
-  const mk=(id,m,sh)=>{g.add(m);T(id,m,sh);return m;};
-  mk('nose',ell(.22,.3,.3,M(0xf0b0a0),[0,6.35,.9]));mk('nose',ell(.35,.28,.3,M(0xe9998a),[0,6.35,.5]));
-  mk('rpharynx',tube(cv([[0,6.1,.4],[0,5.6,.2],[0,5.2,.12]]),.2,M(0xe08a9b)));
-  mk('larynx',new THREE.Mesh(new THREE.CylinderGeometry(.22,.2,.4,20),M(0xc9d7e8)));d.g=g;g.children[g.children.length-1].position.set(0,5.0,.15);
-  const tr=mk('trachea',tube(cv([[0,4.85,.15],[0,4.2,.18],[0,3.55,.2]]),.16,M(0x8fb4dc)));
-  for(let i=0;i<9;i++){const r=new THREE.Mesh(new THREE.TorusGeometry(.17,.035,8,20),M(0x5b86b8));r.position.set(0,4.75-i*.15,.17+.003*i);r.rotation.x=Math.PI/2;mk('trachea',r);}
-  [-1,1].forEach(s=>mk('bronchi',tube(cv([[0,3.55,.2],[s*.3,3.35,.2],[s*.6,3.1,.15]]),.1,M(0x4f86c6))));
-  d.lung=[];d.leafW=null;
-  [[-1,V(-1.4,2.3,.1),V(.95,1.7,.8)],[1,V(1.35,2.3,.05),V(.82,1.6,.72)]].forEach((c,idx)=>{
-   const [s,pos,rad]=c;const grp=new THREE.Group();grp.position.copy(pos);g.add(grp);
-   const shell=ell(rad.x,rad.y,rad.z,GLASS(0xe77d90,.55),null);grp.add(shell);T('rlungs',shell,true);
-   const leaves=[],mat=M(0x4f86c6);const st=V(s*-.8*-1*-1,.8,.05);/* placeholder */
-   const start=V(-s*.8,.8,.05),dir=V(s*.55,-.8,.1).normalize();growTree(grp,mat,start,dir,.9,.11,5,rad,leaves);grp.traverse(m=>{if(m.isMesh&&m!==shell){T('bronchi',m);}});
-   const im=new THREE.InstancedMesh(new THREE.SphereGeometry(1,10,8),M(0xf08aa0),leaves.length*3);const o=new THREE.Object3D();
+  const noseG=blobG(.24,.3,.32,{w:36,h:28,shape:(x,y,z,o)=>{const k=1-.4*ss(-1,.6,y);o[0]=x*k;o[1]=y;o[2]=z*(1+.3*ss(-.2,1,-y));},color:0xf0b0a0,bump:.03});
+  mesh(g,T,'nose',noseG,bio(0xf0b0a0,{roughness:.4}),[0,6.35,.9]);
+  mesh(g,T,'nose',blobG(.35,.28,.3,{w:36,h:28,color:0xe9998a,bump:.04}),wet(0xe9998a,.8),[0,6.35,.5]);
+  lm(g,T,'rpharynx',cv([[0,6.1,.4],[0,5.6,.2],[0,5.2,.12]]),{radius:.2,color:0xe08a9b},wet(0xe08a9b,.8));
+  const lar=mesh(g,T,'larynx',blobG(.25,.22,.22,{w:36,h:28,shape:(x,y,z,o)=>{o[0]=x*(1-.4*ss(0,1,z));o[1]=y;o[2]=z;},color:0xd6e2ee,bump:.02}),bio(0xd6e2ee,{roughness:.2,clearcoat:1}),[0,5.0,.17]);
+  const ring=u=>1+.14*Math.pow(.5+.5*Math.cos(u*Math.PI*2*9),3);
+  lm(g,T,'trachea',cv([[0,4.85,.15],[0,4.2,.18],[0,3.55,.2]]),{radius:.16,radial:24,dens:70,color:0xdfe8f2,ps:5,paint:{v:.04},wob:(u)=>ring(u)},bio(0xdfe8f2,{roughness:.22,clearcoat:1,sheen:0}));
+  [-1,1].forEach(s=>lm(g,T,'bronchi',cv([[0,3.55,.2],[s*.3,3.35,.2],[s*.6,3.1,.15]]),{r:u=>.115-.03*u,radial:18,dens:60,color:0xdfe8f2,wob:(u)=>ring(u*.9)},bio(0xdfe8f2,{roughness:.22,clearcoat:1,sheen:0})));
+  d.lung=[];d.lungMats=[];d.leafW=null;d.xray=false;
+  [[-1,V(-1.4,2.3,.1),V(.95,1.75,.8)],[1,V(1.35,2.3,.05),V(.82,1.62,.72)]].forEach((c,idx)=>{
+   const s=c[0],pos=c[1],rad=c[2],grp=new THREE.Group();grp.position.copy(pos);g.add(grp);
+   const lmat=bio(0xe9a3ad,{roughness:.48,clearcoat:.4,clearcoatRoughness:.35,sheen:.8,sheenColor:new THREE.Color(0xffd0d8),transparent:true,opacity:1});d.lungMats.push(lmat);
+   const shell=new THREE.Mesh(lungG(s,rad.x,rad.y,rad.z),lmat);grp.add(shell);T('rlungs',shell,true);
+   const leaves=[],tmat=bioP(0x4f86c6,{roughness:.35,clearcoat:.5});
+   growTree(grp,tmat,V(-s*.8,.8,.05),V(s*.55,-.8,.1).normalize(),.9,.11,5,rad,leaves);
+   grp.children.forEach(m=>{if(m!==shell)T('bronchi',m);});
+   const im=new THREE.InstancedMesh(new THREE.SphereGeometry(1,12,10),bioP(0xf08aa0,{roughness:.4,clearcoat:.5}),leaves.length*3),o=new THREE.Object3D();
    leaves.forEach((p,i)=>{for(let k=0;k<3;k++){o.position.set(p.x+(Math.random()-.5)*.12,p.y+(Math.random()-.5)*.12,p.z+(Math.random()-.5)*.12);o.scale.setScalar(.055);o.updateMatrix();im.setMatrixAt(i*3+k,o.matrix);}});
    grp.add(im);T('alveoli',im);
-   if(idx===1&&leaves[3]){d.leafW=leaves[3].clone().add(pos);}
+   if(idx===1&&leaves[3])d.leafW=leaves[3].clone().add(pos);
    d.lung.push({grp,base:pos.clone(),rad});
   });
-  const dia=new THREE.Mesh(new THREE.SphereGeometry(1,40,14,0,Math.PI*2,0,Math.PI/2),M(0xc77d5b,{side:THREE.DoubleSide,roughness:.6}));dia.scale.set(2,.6,1);dia.position.set(0,.75,.15);mk('diaphragm',dia);d.dia=dia;
+  d.organs[6][1]=()=>d.leafW?d.leafW.toArray():[1,1.5,.3];
+  /* diaphragm: muscle fibres around a pale central tendon */
+  const dg=weld(new THREE.SphereGeometry(1,72,26,0,Math.PI*2,0,Math.PI/2));
+  paintFn(dg,(x,y,z)=>{const r=Math.sqrt(x*x+z*z),c=new THREE.Color();if(r<.34)c.set(0xeadbc6).multiplyScalar(1+.05*pn(x*8,y*8,z*8));else c.set(0xb0483f).multiplyScalar(1+.14*pn(Math.atan2(z,x)*9,r*3,0));return c;});
+  dg.computeVertexNormals();
+  d.dia=new THREE.Mesh(dg,bio(0xb0483f,{roughness:.45,clearcoat:.5,side:THREE.DoubleSide}));d.dia.scale.set(2,.6,1);d.dia.position.set(0,.75,.15);g.add(d.dia);T('diaphragm',d.dia);
+  /* rib cage: ribs with pale costal cartilage, sternum */
   d.ribs=new THREE.Group();g.add(d.ribs);
-  for(let r=0;r<7;r++){const y0=4.2-r*.4,a=1.95-Math.abs(r-3)*.0-(r<2?.25*(2-r):0)-(r>4?.15*(r-4):0),b=1.0;
-   [-1,1].forEach(s=>{const pts=[];for(let k=0;k<=14;k++){const th=Math.PI-k/14*(Math.PI-.18);pts.push([s*a*Math.sin(th),y0-.55*(1-th/Math.PI)*0-.5*(k/14),b*Math.cos(th)]);}const m=tube(cv(pts),.045,M(0xcbbf98),40,6);d.ribs.add(m);T('ribs',m,true);});}
-  const stn=new THREE.Mesh(new THREE.BoxGeometry(.32,2.8,.1),M(0xcbbf98));stn.position.set(0,3.2,1.02);d.ribs.add(stn);T('ribs',stn,true);
+  const bone=new THREE.Color(0xe2d6b6),cart=new THREE.Color(0xf1ead6),tmpc=new THREE.Color(),rm=bio(0xe2d6b6,{roughness:.5,clearcoat:.25,sheen:0});
+  for(let r=0;r<7;r++){const y0=4.2-r*.4,a=1.95-(r<2?.25*(2-r):0)-(r>4?.15*(r-4):0),b=1.0;
+   [-1,1].forEach(s=>{const pts=[];for(let k=0;k<=14;k++){const th=Math.PI-k/14*(Math.PI-.18);pts.push([s*a*Math.sin(th),y0-.5*(k/14),b*Math.cos(th)]);}
+    const m=new THREE.Mesh(loft(cv(pts),{radius:.05,radial:10,dens:12,cfn:u=>tmpc.copy(bone).lerp(cart,ss(.74,.84,u)).clone()}),rm);m.castShadow=true;d.ribs.add(m);T('ribs',m,true);});}
+  const stn=new THREE.Mesh(loft(cv([[0,4.5,1.03],[0,3.2,1.06],[0,1.9,1.0]]),{r:u=>.2*(1-.4*ss(.1,.3,u))*(1-.8*ss(.85,1,u)),radial:14,dens:12,color:0xf1ead6}),rm);d.ribs.add(stn);T('ribs',stn,true);
   const pR=[[0,6.6,1.0],[0,6.3,.5],[0,5.6,.15],[0,4.8,.17],[0,3.6,.2],[-.5,3.2,.2],[-1.0,2.6,.2],[-1.2,1.9,.2]];
   d.air=[cv(pR),cv([[0,6.6,1.0],[0,6.3,.5],[0,5.6,.15],[0,4.8,.17],[0,3.6,.2],[.5,3.2,.2],[.95,2.6,.2],[1.1,1.9,.2]])];
   d.N=70;d.dots=new Dots(d.N,.16,g);d.ap=[];for(let i=0;i<d.N;i++)d.ap.push({u:Math.random(),side:i%2});
   d.ph=0;d.rate=14;d.amp=1;d.deep=0;d.v=0;
-  d.organs[6][1]=()=>d.leafW?d.leafW.toArray():[1,1.5,.3];
  },
- reset(){this.ph=0;},
+ reset(){this.ph=0;this.setXray(false);},
+ setXray(on){this.xray=on;if(!this.lungMats)return;this.lungMats.forEach(m=>{m.opacity=on?.22:1;m.depthWrite=!on;m.needsUpdate=true;});if(this.xrayBtn)this.xrayBtn.classList.toggle('on',on);},
+ onSelect(id){if(id==='alveoli'||id==='bronchi')this.setXray(true);},
  update(dt,raw){
   this.ph=(this.ph+dt*this.rate/60)%1;
   if(this.deep>0)this.deep-=raw;const ampT=this.deep>0?1.8:1;this.amp=lerp(this.amp,ampT,.05);
@@ -2208,7 +2478,7 @@ defView('res',{
   this.lung.forEach(L=>{const sx=1+.07*a*v,sy=1+.09*a*v;L.grp.scale.set(sx,sy,sx);});
   this.dia.scale.y=.6-.3*v*Math.min(1.3,a);this.dia.position.y=.75-.32*v*a;
   this.ribs.scale.set(1+.05*a*v,1,1+.04*a*v);this.ribs.position.y=.06*a*v;
-  for(let i=0;i<this.N;i++){const p=this.ap[i];p.u+=flow*dt*.2*(this.rate/14)*(.5+Math.random()*0);if(p.u>1)p.u-=1;if(p.u<0)p.u+=1;
+  for(let i=0;i<this.N;i++){const p=this.ap[i];p.u+=flow*dt*.2*(this.rate/14);if(p.u>1)p.u-=1;if(p.u<0)p.u+=1;
    const c=this.air[p.side];c.getPointAt(clamp(p.u,0,1),_tp);const inh=flow>0;const col=inh?rgb(0x0ea5e9):rgb(0x6b7280);this.dots.set(i,_tp.x+Math.sin(i*7)*.05,_tp.y,_tp.z+Math.cos(i*5)*.05,col,Math.min(1,Math.abs(flow)*2.2));}
   this.dots.commit();
   if(this.statusEl){const st=flow>0?0:1;if(st!==this.shown){this.shown=st;this.statusEl.innerHTML=st?({tr:'<b>Nefes verme</b> — diyafram gevşeyip yukarı çıkar, kaburgalar iner, hacim azalır, basınç artar ve hava dışarı çıkar.',ar:'<b>الزفير</b> — يرتخي الحجاب الحاجز ويرتفع، وتنزل الأضلاع، يقلّ الحجم فيزداد الضغط ويخرج الهواء.',en:'<b>Exhale</b> — diaphragm relaxes and rises, ribs lower, volume falls, pressure rises and air flows out.'}[ST.lang]):({tr:'<b>Nefes alma</b> — diyafram kasılıp düzleşir, kaburgalar yukarı-öne gider, hacim artar, basınç düşer ve hava içeri girer.',ar:'<b>الشهيق</b> — ينقبض الحجاب الحاجز وينبسط، وترتفع الأضلاع للأمام، يزداد الحجم فينخفض الضغط ويدخل الهواء.',en:'<b>Inhale</b> — diaphragm contracts and flattens, ribs move up and out, volume rises, pressure drops and air flows in.'}[ST.lang]);}}
@@ -2217,7 +2487,8 @@ defView('res',{
  status:true,
  controls(box,d){
   box.appendChild(uiSlider(L3(UI.breathRate),6,40,1,d.rate,v=>d.rate=v,v=>v+L3(UI.perMin)));
-  const r=uiRow();r.appendChild(uiBtn('💨 '+L3(UI.deep),()=>{d.deep=6;}));box.appendChild(r);
+  const r=uiRow();r.appendChild(uiBtn('💨 '+L3(UI.deep),()=>{d.deep=6;}));
+  d.xrayBtn=uiBtn('◎ '+({tr:'İç görünüm',ar:'منظر داخلي',en:'X-ray'}[ST.lang]),()=>d.setXray(!d.xray));d.xrayBtn.classList.toggle('on',d.xray);r.appendChild(d.xrayBtn);box.appendChild(r);
   commonControls(box);
   const lg=el('div','legend');lg.innerHTML='<i style="background:#0ea5e9"></i>'+({tr:'Soluk alınan hava (O₂)',ar:'هواء الشهيق (O₂)',en:'Inhaled air (O₂)'}[ST.lang])+'<br><i style="background:#6b7280"></i>'+({tr:'Verilen hava (CO₂)',ar:'هواء الزفير (CO₂)',en:'Exhaled air (CO₂)'}[ST.lang]);box.appendChild(lg);
   d.shown=-9;
@@ -2231,21 +2502,21 @@ defView('res_d',{
  title:S3('Alveoller ve gaz alışverişi','الأسناخ وتبادل الغازات','Alveoli and gas exchange'),
  organs:[['bronchiole',[-4.2,3.4,.5]],['alv',[1,1.8,1.1]],['acap',[2.9,-.2,1.1]]],
  build(g,T,d){
-  const br=tube(cv([[-6,4.2,0],[-4.2,2.8,0],[-2.6,1,0],[-1.6,.2,0]]),.28,M(0xa7c4e5));g.add(br);T('bronchiole',br);
+  lm(g,T,'bronchiole',cv([[-6,4.2,0],[-4.2,2.8,0],[-2.6,1,0],[-1.6,.2,0]]),{radius:.28,radial:22,dens:30,color:0xc9dcf0,wob:(u)=>1+.05*Math.cos(u*40)},bio(0xc9dcf0,{roughness:.25,clearcoat:1,sheen:0,transparent:true,opacity:.85}));
   const node=V(-1.6,.2,0);d.sacs=[[-.6,1.6,.2],[1.0,1.5,-.2],[2.3,.2,.2],[1.0,-1.4,.3],[-.6,-1.3,-.2],[.5,.1,0]].map(p=>V(p[0],p[1],p[2]));d.knots=[];
   d.sacs.forEach((s,i)=>{
-   const sac=ell(.95,.95,.95,GLASS(0xf7a8bb,.5),[s.x,s.y,s.z],36);g.add(sac);T('alv',sac,true);
-   const duct=tube(cv([[node.x,node.y,node.z],[(node.x+s.x)/2,(node.y+s.y)/2,(node.z+s.z)/2],[s.x,s.y,s.z]]),.1,M(0xa7c4e5),20,8);g.add(duct);T('bronchiole',duct);
+   mesh(g,T,'alv',blobG(.95,.95,.95,{w:64,h:48,color:0xf7a8bb,bump:.07,bf:2.4,paint:{s:3,v:.08}}),bio(0xf7a8bb,{roughness:.2,clearcoat:1,transparent:true,opacity:.42,depthWrite:false}),[s.x,s.y,s.z],true);
+   lm(g,T,'bronchiole',cv([[node.x,node.y,node.z],[(node.x+s.x)/2,(node.y+s.y)/2,(node.z+s.z)/2],[s.x,s.y,s.z]]),{radius:.1,radial:12,color:0xc9dcf0},bio(0xc9dcf0,{roughness:.25,clearcoat:.8}));
    const kp=knotCurve(1.02,70).map(p=>[p[0]+s.x,p[1]+s.y,p[2]+s.z]);const kc=cv(kp,true);d.knots.push(kc);
-   const k=tube(kc,.065,M(0xd9534f),140,6);g.add(k);T('acap',k);});
+   put(g,T,'acap',tube(kc,.065,bioP(0xd9534f,{roughness:.3,clearcoat:.8}),140,8));});
   d.dots=new Dots(220,.2,g);d.gp=[];
   for(let i=0;i<220;i++)d.gp.push({s:i%6,k:i%4,ph:Math.random()});
  },
  update(dt){
   this.gp.forEach((p,i)=>{p.ph=(p.ph+dt*(p.k===3?.09:.14))%1;const s=this.sacs[p.s],ph=p.ph;
-   if(p.k===0){/* O2: from sac center out to capillary */const a=i*2.4;const dir=V(Math.cos(a),Math.sin(a*1.3),Math.sin(a*.7)).normalize();const r=lerp(.05,1.02,sm(ph));this.dots.set(i,s.x+dir.x*r,s.y+dir.y*r,s.z+dir.z*r,rgb(0x0ea5e9),ph>.92?1-(ph-.92)*12:1);}
-   else if(p.k===1){/* CO2: from capillary into sac */const a=i*1.7;const dir=V(Math.cos(a),Math.sin(a*1.1),Math.sin(a*.9)).normalize();const r=lerp(1.04,.1,sm(ph));this.dots.set(i,s.x+dir.x*r,s.y+dir.y*r,s.z+dir.z*r,rgb(0x6b7280),ph<.06?ph*16:1);}
-   else if(p.k===2){/* blood cells flowing around the capillary web */const kc=this.knots[p.s];kc.getPointAt(ph,_tp);const o=ph<.5?ph*2:2-ph*2;this.dots.set(i,_tp.x,_tp.y,_tp.z,[lerp(BLU[0],RED[0],o),lerp(BLU[1],RED[1],o),lerp(BLU[2],RED[2],o)],1,.3);}
+   if(p.k===0){const a=i*2.4;const dir=V(Math.cos(a),Math.sin(a*1.3),Math.sin(a*.7)).normalize();const r=lerp(.05,1.02,sm(ph));this.dots.set(i,s.x+dir.x*r,s.y+dir.y*r,s.z+dir.z*r,rgb(0x0ea5e9),ph>.92?1-(ph-.92)*12:1);}
+   else if(p.k===1){const a=i*1.7;const dir=V(Math.cos(a),Math.sin(a*1.1),Math.sin(a*.9)).normalize();const r=lerp(1.04,.1,sm(ph));this.dots.set(i,s.x+dir.x*r,s.y+dir.y*r,s.z+dir.z*r,rgb(0x6b7280),ph<.06?ph*16:1);}
+   else if(p.k===2){const kc=this.knots[p.s];kc.getPointAt(ph,_tp);const o=ph<.5?ph*2:2-ph*2;this.dots.set(i,_tp.x,_tp.y,_tp.z,[lerp(BLU[0],RED[0],o),lerp(BLU[1],RED[1],o),lerp(BLU[2],RED[2],o)],1,.3);}
    else this.dots.hide(i);});
   this.dots.commit();
  },
@@ -2254,27 +2525,26 @@ defView('res_d',{
 });
 
 /* ========== EXCRETORY ========== */
-function bean(mir){
- const g=new THREE.SphereGeometry(1,40,30),p=g.attributes.position;
- for(let i=0;i<p.count;i++){let x=p.getX(i)*.5,y=p.getY(i)*.85,z=p.getZ(i)*.42;x+=.26*Math.exp(-(y*y)/.05)*Math.max(0,-x)/.5;p.setXYZ(i,x,y,z);}
- g.computeVertexNormals();return g;
+function kidneyG(){
+ return blobG(.5,.85,.42,{w:96,h:72,shape:(x,y,z,o)=>{const m=Math.max(0,-x);o[0]=x+.55*Math.exp(-(y*y)/.06)*m;o[1]=y;o[2]=z*(1-.15*Math.exp(-(y*y)/.1)*m);},
+  bump:.025,bf:3,color:0x8f3028,paint:{s:2,v:.1,vein:0x4a120e,va:.18,vs:3}});
 }
 defView('exc',{
- scale:.52,pos:[4.2,1.95,.2],body:true,cam:{p:[4.0,17.5,12.5],t:[4.0,1.0,.3]},
+ scale:.68,pos:[4.2,2.55,.2],body:true,pedScale:1.5,cam:{p:[4.0,17.2,12.2],t:[4.0,2.0,.3]},
  title:S3('Boşaltım sistemi','الجهاز الإخراجي','Excretory system'),
  organs:[['kidney',[1.7,.8,-.2]],['eaorta',[.7,3,-.2]],['evena',[-.8,2.6,-.2]],['rartery',[.6,1.15,-.1]],['rvein',[-.3,.15,-.1]],['ureter',[-1.5,-.8,0]],['bladder',[1.2,-2.5,.8]],['urethra',[.5,-3.4,.5]]],
  build(g,T,d){
-  const mk=(id,m,sh)=>{g.add(m);T(id,m,sh);return m;};
-  [-1,1].forEach(s=>{const k=new THREE.Mesh(bean(),M(0xb5524a,{roughness:.5}));k.position.set(s*1.05,.55,-.45);if(s<0)k.scale.x=-1;mk('kidney',k);
-   const pel=ell(.14,.2,.12,M(0xf2d16b),[s*.68,.5,-.45]);mk('kidney',pel);});
-  mk('eaorta',tube(cv([[.25,3.2,-.22],[.26,1.5,-.22],[.26,-.5,-.22],[.25,-2.0,-.22]]),.14,M(0xe14b4b)));
-  mk('evena',tube(cv([[-.3,3.2,-.22],[-.32,1.5,-.22],[-.32,-.5,-.22],[-.3,-2.0,-.22]]),.17,M(0x4a6fe0)));
+  const kg=kidneyG();
+  [-1,1].forEach(s=>{const k=mesh(g,T,'kidney',kg,bio(0x8f3028,{roughness:.28,clearcoat:.95,clearcoatRoughness:.15}),[s*1.05,.55,-.45]);if(s<0)k.scale.x=-1;
+   mesh(g,T,'kidney',blobG(.16,.22,.13,{w:28,h:22,color:0xf0d27a,bump:.05}),bio(0xf0d27a,{roughness:.35}),[s*.68,.5,-.45]);});
+  lm(g,T,'eaorta',cv([[.25,3.2,-.22],[.26,1.5,-.22],[.26,-.5,-.22],[.25,-2.0,-.22]]),{radius:.14,radial:16,color:0xd94a4a},bio(0xd94a4a,{roughness:.3,clearcoat:.7}));
+  lm(g,T,'evena',cv([[-.3,3.2,-.22],[-.32,1.5,-.22],[-.32,-.5,-.22],[-.3,-2.0,-.22]]),{radius:.17,radial:16,color:0x4a64d8},bio(0x4a64d8,{roughness:.3,clearcoat:.7}));
   d.cr=[cv([[.26,.95,-.24],[.5,.8,-.35],[.74,.62,-.45]]),cv([[.26,.95,-.26],[-.1,.88,-.32],[-.74,.64,-.45]]),cv([[.74,.4,-.45],[.3,.35,-.32],[-.3,.4,-.24]]),cv([[-.74,.4,-.45],[-.5,.38,-.35],[-.3,.38,-.26]])];
-  mk('rartery',tube(d.cr[0],.06,M(0xe14b4b)));mk('rartery',tube(d.cr[1],.06,M(0xe14b4b)));mk('rvein',tube(d.cr[2],.07,M(0x4a6fe0)));mk('rvein',tube(d.cr[3],.07,M(0x4a6fe0)));
-  d.ur=[1,-1].map(s=>cv([[s*.7,.2,-.4],[s*.82,-.8,-.25],[s*.7,-1.8,-.05],[s*.35,-2.35,.1]]));d.ur.forEach(c=>mk('ureter',tube(c,.055,M(0xf2d16b))));
-  d.bl=mk('bladder',ell(.62,.6,.55,GLASS(0xe8b4a8,.42),[0,-2.7,.25],32),true);
-  d.urine=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),M(0xf4d24a,{roughness:.3}));d.urine.position.set(0,-2.95,.25);g.add(d.urine);
-  mk('urethra',tube(cv([[0,-3.1,.25],[0,-3.5,.3]]),.075,M(0xf2d16b)));
+  [0,1].forEach(i=>lm(g,T,'rartery',d.cr[i],{radius:.06,radial:12,color:0xd94a4a},bio(0xd94a4a,{roughness:.3})));[2,3].forEach(i=>lm(g,T,'rvein',d.cr[i],{radius:.07,radial:12,color:0x4a64d8},bio(0x4a64d8,{roughness:.3})));
+  d.ur=[1,-1].map(s=>cv([[s*.7,.2,-.4],[s*.82,-.8,-.25],[s*.7,-1.8,-.05],[s*.35,-2.35,.1]]));d.ur.forEach(c=>lm(g,T,'ureter',c,{radius:.055,radial:12,color:0xf0d27a,wob:(u)=>1+.1*Math.sin(u*60)},bio(0xf0d27a,{roughness:.35,clearcoat:.6})));
+  d.bl=mesh(g,T,'bladder',blobG(.62,.6,.55,{w:56,h:42,shape:(x,y,z,o)=>{const t=ss(-1,1,y);o[0]=x*(1-.25*t);o[1]=y;o[2]=z*(1-.2*t);},color:0xe3a69c,bump:.02,paint:{s:2,v:.08,vein:0xb44f4f,va:.4,vs:3.5}}),bio(0xe3a69c,{roughness:.25,clearcoat:1,transparent:true,opacity:.5,depthWrite:false}),[0,-2.7,.25],true);
+  d.urine=new THREE.Mesh(new THREE.SphereGeometry(1,28,20),bioP(0xf4d24a,{roughness:.12,clearcoat:1}));d.urine.position.set(0,-2.95,.25);g.add(d.urine);
+  lm(g,T,'urethra',cv([[0,-3.1,.25],[0,-3.5,.3]]),{radius:.075,color:0xf0d27a},bio(0xf0d27a,{roughness:.35}));
   d.blood=[{c:cv([[.25,3.2,-.22],[.26,1.5,-.22],[.26,-.5,-.22],[.25,-2.0,-.22]]),ox:1},{c:cv([[-.3,-2.0,-.22],[-.32,-.5,-.22],[-.32,1.5,-.22],[-.3,3.2,-.22]]),ox:0},{c:d.cr[0],ox:1},{c:d.cr[1],ox:1},{c:d.cr[2],ox:0},{c:d.cr[3],ox:0}];
   d.bd=new Dots(60,.13,g);d.bp=[];for(let i=0;i<60;i++)d.bp.push({k:i%6,u:Math.random()});
   d.dr=new Dots(40,.15,g);d.drops=[];for(let i=0;i<40;i++)d.drops.push({on:false,u:0,side:0,ur:false});
@@ -2288,7 +2558,7 @@ defView('exc',{
   else{this.fill-=.35*dt;this.sp+=dt*10;while(this.sp>1){this.sp-=1;const f=this.drops.find(x=>!x.on);if(f){f.on=true;f.u=0;f.ur=true;}}if(this.fill<=.06)this.void=false;}
   this.drops.forEach((f,i)=>{if(!f.on){this.dr.hide(i);return;}f.u+=dt*(f.ur?1.6:.45);if(f.u>=1){f.on=false;this.dr.hide(i);return;}
    if(f.ur)_tp.set(0,lerp(-3.1,-3.6,f.u),.27);else this.ur[f.side].getPointAt(f.u,_tp);this.dr.set(i,_tp.x,_tp.y,_tp.z,[this.col.r,this.col.g,this.col.b],1);});this.dr.commit();
-  const f=clamp(this.fill,.05,1);this.urine.scale.set(.5*f+.1,.48*f+.08,.44*f+.08);this.urine.position.y=-2.7-.3+.3*f*.9;this.urine.material.color.copy(this.col);this.bl.scale.set(1,1,1);this.bl.scale.setScalar(1+.06*f*(this.void?-1:1));
+  const f=clamp(this.fill,.05,1);this.urine.scale.set(.5*f+.1,.48*f+.08,.44*f+.08);this.urine.position.y=-2.7-.3+.3*f*.9;this.urine.material.color.copy(this.col);this.bl.scale.setScalar(1+.06*f*(this.void?-1:1));
   if(this.barEl){this.barEl.style.setProperty('--p',(f*100)+'%');this.barTx.textContent=Math.round(f*100)+'%';}
   this.auto=this.void?'urethra':null;
  },
@@ -2308,17 +2578,17 @@ defView('exc_d',{
  title:S3('Nefron: kan nasıl süzülür?','النفرون: كيف يُرشَّح الدم؟','Nephron: how blood is filtered'),
  organs:[['bowman',[-3.2,3.3,.6]],['glom',[-4.8,2.3,.8]],['tubule',[-3.9,-1.2,.8]],['collect',[2.9,-3.5,.5]],['pcap',[-5.2,-1.4,.9]]],
  build(g,T,d){
-  const mk=(id,m,sh)=>{g.add(m);T(id,m,sh);return m;};
-  mk('bowman',ell(1.05,1.05,1.05,GLASS(0xf2d98a,.28),[-3.2,2,0],36),true);
-  const gl=new THREE.Mesh(new THREE.TubeGeometry(cv(knotCurve(.46,60).map(p=>[p[0]-3.2,p[1]+2,p[2]]),true),160,.07,8,true),M(0xd62828));mk('glom',gl);
-  mk('glom',tube(cv([[-6,3.6,0],[-4.6,2.9,0],[-3.7,2.4,0],[-3.3,2.1,0]]),.13,M(0xe14b4b)));
-  mk('glom',tube(cv([[-3.0,1.4,.1],[-3.15,1.0,.5],[-3.6,.9,.8]]),.07,M(0xe14b4b)));
+  mesh(g,T,'bowman',blobG(1.05,1.05,1.05,{w:56,h:42,color:0xf2d98a,bump:.02}),bio(0xf2d98a,{roughness:.15,clearcoat:1,transparent:true,opacity:.3,depthWrite:false}),[-3.2,2,0],true);
+  const gl=mesh(g,T,'glom',new THREE.TubeGeometry(cv(knotCurve(.46,60).map(p=>[p[0]-3.2,p[1]+2,p[2]]),true),160,.07,10,true),bioP(0xd62828,{roughness:.28,clearcoat:.9}));
+  lm(g,T,'glom',cv([[-6,3.6,0],[-4.6,2.9,0],[-3.7,2.4,0],[-3.3,2.1,0]]),{radius:.13,radial:14,color:0xe14b4b},bio(0xe14b4b,{roughness:.3,clearcoat:.7}));
+  lm(g,T,'glom',cv([[-3.0,1.4,.1],[-3.15,1.0,.5],[-3.6,.9,.8]]),{radius:.07,radial:12,color:0xe14b4b},bio(0xe14b4b,{roughness:.3}));
   const prox=[[-3.2,1.0,0],[-3.7,.5,.2],[-2.7,.2,-.2],[-3.7,-.4,.2],[-2.7,-.8,-.2],[-3.4,-1.3,0],[-3,-1.9,0]],hen=[[-3,-1.9,0],[-3,-3.2,0],[-3,-4.6,0],[-2.3,-5.2,0],[-1.6,-4.6,0],[-1.6,-3.2,0],[-1.6,-1.8,0]],dis=[[-1.6,-1.8,0],[-1.2,-1.2,.2],[-.4,-1.6,-.2],[.4,-1,.2],[1,-1.4,-.2],[1.6,-.8,0],[2.2,0,0]],col=[[2.2,2.4,0],[2.2,0,0],[2.2,-2.5,0],[2.2,-5.6,0]];
-  const tm=M(0xe9c75a,{transparent:true,opacity:.78});
-  mk('tubule',tube(cv(prox),.14,tm,120,10));mk('tubule',tube(cv(hen),.12,tm,100,10));mk('tubule',tube(cv(dis),.13,tm,100,10));mk('collect',tube(cv(col),.24,M(0xe0a63a,{transparent:true,opacity:.8}),80,12));
+  const tm=wet(0xe9c75a,.78),rip=(u,a)=>1+.07*Math.sin(u*90+a*2);
+  lm(g,T,'tubule',cv(prox),{radius:.14,radial:16,dens:34,color:0xe9c75a,wob:rip},tm);lm(g,T,'tubule',cv(hen),{radius:.12,radial:16,dens:30,color:0xe9c75a,wob:rip},tm);lm(g,T,'tubule',cv(dis),{radius:.13,radial:16,dens:30,color:0xe9c75a,wob:rip},tm);
+  lm(g,T,'collect',cv(col),{radius:.24,radial:20,dens:24,color:0xe0a63a},wet(0xe0a63a,.8));
   d.path=[cv(prox),cv(hen),cv(dis),cv(col.slice(1))];d.pl=d.path.map(c=>c.getLength());d.ptot=d.pl.reduce((a,b)=>a+b,0);
   d.capc=cv([[-3.6,.9,.8],[-4.6,.4,.7],[-4.6,-1.2,.6],[-4.2,-3,.6],[-3.9,-5,.6],[-2.3,-6,.5],[-.9,-5,.6],[-.7,-3,.6],[-.9,-1.4,.6],[-.2,-.7,.7],[1.2,.3,.6]]);
-  mk('pcap',tube(d.capc,.07,M(0xb35c9a),160,8));
+  lm(g,T,'pcap',d.capc,{radius:.07,radial:12,dens:20,color:0xb35c9a},bio(0xb35c9a,{roughness:.3,clearcoat:.8}));
   d.dots=new Dots(120,.2,g);d.f=[];for(let i=0;i<60;i++)d.f.push({u:Math.random(),re:Math.random()<.7,ra:.08+Math.random()*.2,t:-1});
   d.cb=[];for(let i=0;i<30;i++)d.cb.push({u:Math.random()});
  },
