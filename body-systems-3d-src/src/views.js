@@ -391,7 +391,7 @@ defView('exc',{
   const rate=lerp(.012,.05,this.hyd);this.col.setHex(0xb8860b).lerp(new THREE.Color(0xfff2a8),this.hyd);
   if(!this.void){this.fill+=rate*dt;this.sp+=dt*lerp(1.2,5,this.hyd);while(this.sp>1){this.sp-=1;const f=this.drops.find(x=>!x.on);if(f){f.on=true;f.u=0;f.side=Math.random()<.5?0:1;f.ur=false;}}if(this.fill>=1)this.void=true;}
   else{this.fill-=.35*dt;this.sp+=dt*10;while(this.sp>1){this.sp-=1;const f=this.drops.find(x=>!x.on);if(f){f.on=true;f.u=0;f.ur=true;}}if(this.fill<=.06)this.void=false;}
-  this.drops.forEach((f,i)=>{if(!f.on){this.dr.hide(i);return;}f.u+=dt*(f.ur?1.6:.45);if(f.u>=1){f.on=false;this.dr.hide(i);return;}
+  this.drops.forEach((f,i)=>{if(!f.on){this.dr.hide(i);return;}f.u+=dt*(f.ur?1.6:.45);if(f.u>=1){f.on=false;if(!f.ur)this.arr=(this.arr||0)+1;this.dr.hide(i);return;}
    if(f.ur)this.uret.getPointAt(f.u,_tp);else this.ur[f.side].getPointAt(f.u,_tp);this.dr.set(i,_tp.x,_tp.y,_tp.z,[this.col.r,this.col.g,this.col.b],1);});this.dr.commit();
   const f=clamp(this.fill,.05,1),r=this.blr;
   this.urine.scale.set(r[0]*(.45+.5*f),r[1]*(.3+.55*f),r[2]*(.45+.5*f));this.urine.position.set(this.blc.x,this.blc.y-r[1]*(.7-.7*f)+.04,this.blc.z);

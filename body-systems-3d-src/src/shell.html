@@ -42,6 +42,8 @@ canvas{display:block;touch-action:none;cursor:grab}
 .mi:hover,.mi.on{background:rgba(217,119,6,.14)}
 .mi b{color:var(--acc);margin-inline-end:6px}
 #layerpop label{display:flex;gap:8px;align-items:center;padding:4px 0;cursor:pointer}
+#lp-vol{flex-wrap:wrap}
+#lp-vol input{flex:1;min-width:90px;accent-color:var(--acc)}
 #layerpop .btn{margin-top:6px;width:100%}
 /* card */
 #card{position:fixed;top:56px;right:12px;left:auto;width:320px;max-height:calc(100vh - 140px);overflow:auto;background:var(--panel);border-radius:16px;box-shadow:var(--shadow);padding:14px 14px 16px;z-index:5}
@@ -153,6 +155,7 @@ details.dt summary{cursor:pointer;font-weight:800;color:var(--acc);font-size:14.
 <aside id="card"></aside>
 <div id="menu" hidden></div>
 <div id="layerpop" hidden>
+ <label id="lp-vol"><span></span><input type="range" min="0" max="100" step="5" value="60"></label>
  <label id="lp-labels"><input type="checkbox"><span></span></label>
  <label id="lp-outline"><input type="checkbox" checked><span></span></label>
  <label id="lp-rotate"><input type="checkbox"><span></span></label>

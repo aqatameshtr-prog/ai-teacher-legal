@@ -11,9 +11,9 @@ function ell(sx,sy,sz,mat,p,det){const m=new THREE.Mesh(new THREE.SphereGeometry
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
 
 /* ---------- state ---------- */
-const ST={lang:'tr',step:0,close:false,play:true,speed:1,labels:true,outline:true,rotate:false,sound:true,theme:'light',stars:0,
+const ST={vol:.6,lang:'tr',step:0,close:false,play:true,speed:1,labels:true,outline:true,rotate:false,sound:true,theme:'light',stars:0,
   explored:{},answered:{},mcq:{},revModel:'dig',revScore:null,revIdx:0,revDone:false,sel:null,hover:null};
-try{const l=localStorage.getItem('b3d_lang');if(l&&['tr','ar','en'].includes(l))ST.lang=l;const th=localStorage.getItem('b3d_theme');if(th)ST.theme=th;}catch(e){}
+try{const vv=parseFloat(localStorage.getItem('b3d_vol'));if(!isNaN(vv))ST.vol=Math.min(1,Math.max(0,vv));const l=localStorage.getItem('b3d_lang');if(l&&['tr','ar','en'].includes(l))ST.lang=l;const th=localStorage.getItem('b3d_theme');if(th)ST.theme=th;}catch(e){}
 ST.labels=false;
 const t=k=>UI[k][ST.lang];
 const L3=o=>o[ST.lang]||o.en;
@@ -107,8 +107,7 @@ function ensureBuilt(def){
 }
 
 /* ---------- audio ---------- */
-let actx=null;
-function beep(f,d,type,v){if(!ST.sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.value=v||.05;o.connect(g);g.connect(actx.destination);const n=actx.currentTime;g.gain.setValueAtTime(v||.05,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.start(n);o.stop(n+d);}catch(e){}}
+function beep(f,d,type,v){if(!ST.sound||typeof SND==='undefined')return;try{SND.tone(f,f,d,(v||.05)*3.2,type);}catch(e){}}
 const sfx={tap:()=>beep(520,.08),ok:()=>{beep(660,.12);setTimeout(()=>beep(880,.18),110);},no:()=>beep(180,.22,'sawtooth',.04),star:()=>{[660,784,988].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*90));}};
 
 /* ---------- page textures ---------- */
@@ -479,7 +478,7 @@ function applyLang(){
  $('#unit').textContent=L3(UI.unit);$('#hint').textContent=L3(UI.tap);
  document.querySelectorAll('#langs button').forEach(b=>b.classList.toggle('on',b.dataset.l===ST.lang));
  try{localStorage.setItem('b3d_lang',ST.lang);}catch(e){}
- $('#lp-labels span').textContent=L3(UI.labels);$('#lp-outline span').textContent=L3(UI.outline);$('#lp-rotate span').textContent=L3(UI.rotate);$('#lp-reset').textContent=L3(UI.reset);
+ $('#lp-vol span').textContent='🔊 '+L3(UI.sound);$('#lp-labels span').textContent=L3(UI.labels);$('#lp-outline span').textContent=L3(UI.outline);$('#lp-rotate span').textContent=L3(UI.rotate);$('#lp-reset').textContent=L3(UI.reset);
  $('#sound').title=L3(UI.sound);$('#theme').title=L3(UI.theme);$('#layers').title=L3(UI.layers);$('#menuBtn').title=L3(UI.menu);
 }
 function applyTheme(){
@@ -497,7 +496,8 @@ function wire(){
  ['tr','ar','en'].forEach(l=>{const b=el('button','',{tr:'TR',ar:'ع',en:'EN'}[l]);b.dataset.l=l;b.onclick=()=>{setLang(l);};$('#langs').appendChild(b);});
  $('#prev').onclick=()=>goStep(ST.step-1);$('#next').onclick=()=>goStep(ST.step+1);
  $('#menuBtn').onclick=()=>{$('#menu').hidden=!$('#menu').hidden;$('#layerpop').hidden=true;};
- $('#sound').onclick=e=>{ST.sound=!ST.sound;e.currentTarget.classList.toggle('off',!ST.sound);if(ST.sound)sfx.tap();};
+ $('#sound').onclick=e=>{ST.sound=!ST.sound;e.currentTarget.classList.toggle('off',!ST.sound);if(ST.sound){audioCtx();sfx.tap();}else SND.silence();};
+ $('#lp-vol input').value=Math.round(ST.vol*100);$('#lp-vol input').oninput=e=>setVolume(+e.target.value/100);
  $('#theme').onclick=()=>{ST.theme=ST.theme==='dark'?'light':'dark';applyTheme();};
  $('#layers').onclick=()=>{$('#layerpop').hidden=!$('#layerpop').hidden;$('#menu').hidden=true;};
  const tg=(id,key,after)=>{const c=$(id+' input');c.checked=ST[key];c.onchange=()=>{ST[key]=c.checked;if(after)after();};};
@@ -521,7 +521,7 @@ function frame(now){
  const raw=Math.min(.05,(now-clock.last)/1000);clock.last=now;clock.time+=raw;
  const dt=ST.play?raw*ST.speed:0;
  if(CAM.to){CAM.a=Math.min(1,CAM.a+raw/.9);const k=sm(CAM.a);camera.position.lerpVectors(CAM.from.p,CAM.to.p,k);controls.target.lerpVectors(CAM.from.t,CAM.to.t,k);if(CAM.a>=1)CAM.to=null;}
- if(cur&&cur.update)cur.update(dt,raw,clock.time);
+ if(cur&&cur.update)cur.update(dt,raw,clock.time);if(cur&&typeof SND!=='undefined')SND.tick(cur,dt,raw);
  controls.update();applyHL(clock.time);updateLabels();
  renderer.render(scene,camera);
 }

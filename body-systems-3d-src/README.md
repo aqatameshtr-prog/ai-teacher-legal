@@ -5,7 +5,7 @@ This folder holds what is needed to rebuild or extend it.
 
 ## Layout
 - `src/` – page code: `shell.html` (markup + CSS), `content.js` (UI strings, organ texts, prediction questions),
-  `core.js` (scene, book, pagination, reader, card, navigation), `geo.js` (sculpting helpers + model loader),
+  `core.js` (scene, book, pagination, reader, card, navigation), `sound.js` (WebAudio sounds: heartbeat, breathing, digestion, kidneys), `geo.js` (sculpting helpers + model loader),
   `views.js` (the four body systems and their close-ups).
 - `tools/` – data pipeline:
   - `pack.py`, `centerline.py`, `anchors.py`, `stlio.py`, `ids.txt` – download the BodyParts3D STL files listed in
