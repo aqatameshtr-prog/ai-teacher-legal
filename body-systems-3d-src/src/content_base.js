@@ -1,0 +1,36 @@
+/* ===== content: strings, lessons, organs, questions ===== */
+const S3=(tr,ar,en)=>({tr,ar,en});
+const UI={
+ unit:S3('Fen Bilimleri 7 · 3. Ünite','العلوم 7 · الوحدة 3','Science 7 · Unit 3'),
+ unitName:S3('Vücudumuzdaki Sistemler','الأجهزة في جسمنا','Systems in Our Body'),
+ tap:S3('Şekildeki her yapıya dokun','المس كل جزء في الشكل','Tap each thing in the figure'),
+ explored:S3('Keşfedilen','ما استكشفته','Explored'),
+ play:S3('Oynat','تشغيل','Play'), pause:S3('Duraklat','إيقاف مؤقت','Pause'),
+ speed:S3('Hız','السرعة','Speed'),
+ labels:S3('Etiketler','التسميات','Labels'), outline:S3('Vücut çizgisi','حدود الجسم','Body outline'),
+ rotate:S3('Otomatik döndür','دوران تلقائي','Auto-rotate'), reset:S3('Görünümü sıfırla','إعادة الضبط','Reset view'),
+ closeup:S3('Yakın görünüm','منظر مقرّب','Close-up'), whole:S3('Tüm vücut','الجسم كامل','Whole body'),
+ predict:S3('Önce tahmin et','توقّع أولًا','Predict first'),
+ right:S3('Doğru!','صحيح!','Correct!'), wrong:S3('Henüz değil — tekrar dene','ليس بعد — حاول مجددًا','Not yet — try again'),
+ next:S3('Sonraki','التالي','Next'), prev:S3('Önceki','السابق','Previous'),
+ sound:S3('Ses','الصوت','Sound'), theme:S3('Tema','المظهر','Theme'), layers:S3('Katmanlar','الطبقات','Layers'),
+ menu:S3('Dersler','الدروس','Lessons'),
+ pickOrgan:S3('Bir yapıya dokun, ne işe yaradığını öğren.','المس جزءًا لتعرف وظيفته.','Tap a part to learn what it does.'),
+ focus:S3('Odaklan','ركّز','Focus'),
+ stage:S3('Aşama','المرحلة','Stage'),
+ bpm:S3('Kalp atışı','نبض القلب','Heart rate'), perMin:S3('/dk','/د','/min'),
+ exercise:S3('Egzersiz','تمرين','Exercise'), restBtn:S3('Dinlenme','راحة','Rest'),
+ breathRate:S3('Solunum hızı','معدل التنفس','Breathing rate'), deep:S3('Derin nefes','نَفَس عميق','Deep breath'),
+ hydration:S3('Su tüketimi','شرب الماء','Water intake'), bladderLvl:S3('İdrar kesesi doluluğu','امتلاء المثانة','Bladder fullness'),
+ donor:S3('Kan bağışı: Verici kan grubu','التبرّع بالدم: فصيلة المتبرّع','Blood donation: donor group'),
+ canGive:S3('Kan verebileceği gruplar','الفصائل التي يمكنه إعطاؤها','Can give blood to'),
+ stars:S3('Yıldız','نجوم','Stars'),
+ score:S3('Sonuç','النتيجة','Score'),
+ review:S3('Ünite sonu değerlendirme','تقييم نهاية الوحدة','End-of-unit review'),
+ reviewIntro:S3('Altı soruyu cevapla ve yıldızını kap.','أجب عن ستة أسئلة واحصل على نجمتك.','Answer six questions and earn your star.'),
+ done:S3('Tamamlandı!','أحسنت!','Well done!'),
+ again:S3('Yeniden dene','أعد المحاولة','Try again'),
+ fig:S3('Şekil','الشكل','Fig.'),
+ noWebgl:S3('Bu cihazda 3B görüntü açılamadı.','تعذّر تشغيل العرض ثلاثي الأبعاد على هذا الجهاز.','3D could not start on this device.')
+};
+
